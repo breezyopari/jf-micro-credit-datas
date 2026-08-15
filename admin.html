@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JF MICRO-CREDIT | Admin Control Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .bottom-nav-active { color: #f59e0b; font-weight: 700; }
+        .bottom-nav-active i { transform: translateY(-2px); color: #f59e0b; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased min-h-screen pb-20 md:pb-0">
+
+    <!-- LOGIN SCREEN FOR ADMIN -->
+    <div id="adminAuthLayout" class="min-h-screen flex items-center justify-center p-4 bg-slate-950">
+        <div class="bg-slate-900 rounded-3xl border border-slate-800 p-8 max-w-md w-full shadow-2xl">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-amber-500/10 text-amber-500 rounded-2xl mx-auto flex items-center justify-center text-2xl border border-amber-500/20 mb-3">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h2 class="text-xl font-extrabold text-white">Admin Control Panel</h2>
+                <p class="text-xs text-slate-400 mt-1">Ingiza Credentials za Msimamizi</p>
+            </div>
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">USERNAME</label>
+                    <input type="text" id="adminUser" required class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-500 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">PASSWORD</label>
+                    <input type="password" id="adminPass" required class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-500 text-sm">
+                </div>
+                <button type="submit" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl text-sm transition">Ingia Admin Panel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN ADMIN SYSTEM -->
+    <div id="adminMainLayout" class="hidden min-h-screen flex flex-col">
+        <!-- TOP HEADER -->
+        <header class="bg-slate-950 border-b border-slate-800 p-4 sticky top-0 z-30 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-amber-500 text-slate-950 rounded-xl flex items-center justify-center font-extrabold">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div>
+                    <h2 class="font-extrabold text-sm text-white">ADMIN SYSTEM</h2>
+                    <span class="text-[9px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold uppercase">Owner / Audit</span>
+                </div>
+            </div>
+            <button onclick="adminLogout()" class="px-3 py-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs font-bold rounded-lg">Logout</button>
+        </header>
+
+        <!-- MAIN DASHBOARD CONTENT -->
+        <main class="flex-1 max-w-5xl w-full mx-auto p-4 space-y-5">
+            <!-- TAB 1: OVERVIEW & AUDIT TRAIL -->
+            <div id="admin-tab-overview" class="admin-tab-content space-y-4">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700">
+                        <span class="text-[10px] font-bold text-slate-400">JUMAL YA MTAJI</span>
+                        <h3 class="text-base font-black text-white mt-1" id="admCap">TZS 10,000,000</h3>
+                    </div>
+                    <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700">
+                        <span class="text-[10px] font-bold text-slate-400">ZILIZOPO NJE</span>
+                        <h3 class="text-base font-black text-amber-400 mt-1" id="admOut">TZS 0</h3>
+                    </div>
+                    <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700">
+                        <span class="text-[10px] font-bold text-slate-400">JUMLA YA FAIDA</span>
+                        <h3 class="text-base font-black text-emerald-400 mt-1" id="admProf">TZS 0</h3>
+                    </div>
+                    <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700">
+                        <span class="text-[10px] font-bold text-slate-400">MAREJESHO</span>
+                        <h3 class="text-base font-black text-blue-400 mt-1" id="admCol">TZS 0</h3>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/40 p-4 rounded-2xl border border-slate-700/80">
+                    <h4 class="text-xs font-bold text-slate-300 mb-3"><i class="fa-solid fa-[#f59e0b] fa-list-check mr-2"></i> SYSTEM LOGS & AUDIT TRAIL</h4>
+                    <div class="space-y-2 overflow-y-auto max-h-60" id="adminAuditLogs"></div>
+                </div>
+            </div>
+
+            <!-- TAB 2: APPROVAL SYSTEM -->
+            <div id="admin-tab-approvals" class="admin-tab-content hidden space-y-4">
+                <div class="bg-slate-800/60 rounded-2xl border border-slate-700 p-4">
+                    <h4 class="text-xs font-bold text-amber-400 mb-3 uppercase">Kuidhinisha Mikopo (Approval)</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="border-b border-slate-700 text-slate-400">
+                                <tr><th class="p-2">ID</th><th class="p-2">Mteja</th><th class="p-2">Kiasi</th><th class="p-2">Hatua</th></tr>
+                            </thead>
+                            <tbody id="adminApprovalTable" class="divide-y divide-slate-700/50"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: USIMAMIZI WA MAAFISA -->
+            <div id="admin-tab-officers" class="admin-tab-content hidden space-y-4">
+                <div class="bg-slate-800/60 rounded-2xl border border-slate-700 p-4 space-y-4">
+                    <h4 class="text-xs font-bold text-slate-200 uppercase">Orodha ya Maafisa (Users)</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="border-b border-slate-700 text-slate-400">
+                                <tr><th class="p-2">Jina</th><th class="p-2">Username</th><th class="p-2">Role</th><th class="p-2">Hatua</th></tr>
+                            </thead>
+                            <tbody id="adminOfficersTable" class="divide-y divide-slate-700/50"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: USER FORMS AUDIT -->
+            <div id="admin-tab-forms" class="admin-tab-content hidden space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="adminUserFormsGrid"></div>
+            </div>
+        </main>
+
+        <!-- NAVIGATION BAR YA ADMIN (BOTTOM NAV) -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-slate-950 border-t border-slate-800 px-3 py-2 z-40">
+            <div class="max-w-md mx-auto flex justify-around items-center text-slate-500">
+                <button onclick="switchAdminTab('overview')" id="admin-nav-overview" class="flex flex-col items-center text-[10px] font-semibold bottom-nav-active">
+                    <i class="fa-solid fa-chart-line text-lg"></i><span>Ripoti</span>
+                </button>
+                <button onclick="switchAdminTab('approvals')" id="admin-nav-approvals" class="flex flex-col items-center text-[10px] font-semibold">
+                    <i class="fa-solid fa-clock-rotate-left text-lg"></i><span>Approval</span>
+                </button>
+                <button onclick="switchAdminTab('officers')" id="admin-nav-officers" class="flex flex-col items-center text-[10px] font-semibold">
+                    <i class="fa-solid fa-users-gear text-lg"></i><span>Maafisa</span>
+                </button>
+                <button onclick="switchAdminTab('forms')" id="admin-nav-forms" class="flex flex-col items-center text-[10px] font-semibold">
+                    <i class="fa-solid fa-folder-open text-lg"></i><span>Fomu</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- DOCUMENT VIEW MODAL -->
+    <div id="docModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden p-4">
+        <div class="bg-slate-900 rounded-3xl border border-slate-700 p-5 max-w-2xl w-full max-h-[85vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-3 border-b border-slate-800 pb-2">
+                <h3 class="text-xs font-bold text-white" id="modalClientTitle">Fomu za Mteja</h3>
+                <button onclick="closeDocModal()" class="text-slate-400 font-bold">✕</button>
+            </div>
+            <div id="modalDocGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Check local login status on boot for Admin page
+        window.addEventListener('DOMContentLoaded', () => {
+            if(sessionStorage.getItem('jf_admin_active') === 'true') {
+                document.getElementById('adminAuthLayout').classList.add('hidden');
+                document.getElementById('adminMainLayout').classList.remove('hidden');
+                renderAdminView();
+            }
+        });
+    </script>
+</body>
+</html>
