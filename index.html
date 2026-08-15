@@ -1,0 +1,693 @@
+
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JF MICRO-CREDIT DATAS | Mfumo wa Taarifa za Mikopo</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(229, 231, 235, 0.5); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
+
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-md p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 border border-slate-100">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center text-2xl font-black mx-auto mb-4 shadow-lg shadow-blue-500/30">
+                    JF
+                </div>
+                <h1 class="text-2xl font-bold text-slate-900 tracking-tight">JF MICRO-CREDIT DATAS</h1>
+                <p class="text-slate-500 text-sm mt-1">Mfumo wa Kutunza na Kukagua Taarifa za Mikopo</p>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Aina ya Mtumiaji / Role</label>
+                    <select id="loginRole" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-slate-700 bg-slate-50 font-medium">
+                        <option value="user">User (Afisa Mkopo / Mtoa Huduma)</option>
+                        <option value="admin">Admin (Msimamizi / Mkaguzi)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Jina la Mtumiaji</label>
+                    <input type="text" id="username" required value="afisa1" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-slate-700 bg-slate-50" placeholder="Ingiza username">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Neno la Siri (Password)</label>
+                    <input type="password" id="password" required value="123456" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-slate-700 bg-slate-50" placeholder="••••••••">
+                </div>
+
+                <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-600/30 transition">
+                    Ingia Kwenye Mfumo <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN APP LAYOUT -->
+    <div id="appLayout" class="hidden min-h-screen flex flex-col md:flex-row">
+        <!-- SIDEBAR -->
+        <aside class="w-full md:w-64 bg-slate-900 text-slate-300 flex-shrink-0 flex flex-col justify-between border-r border-slate-800">
+            <div>
+                <div class="p-6 flex items-center gap-3 border-b border-slate-800">
+                    <div class="w-10 h-10 bg-blue-600 text-white rounded-xl flex items-center justify-center font-black text-lg">JF</div>
+                    <div>
+                        <h2 class="font-bold text-white leading-tight text-sm">JF MICRO-CREDIT</h2>
+                        <span class="text-[10px] text-blue-400 font-semibold tracking-wider uppercase">DATAS SYSTEM</span>
+                    </div>
+                </div>
+
+                <nav class="p-4 space-y-1.5">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-chart-pie w-5"></i> Dashboard
+                    </button>
+                    <button onclick="switchTab('wateja')" id="nav-wateja" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-users w-5"></i> Sajili Mteja & Fomu
+                    </button>
+                    <button onclick="switchTab('mikopo')" id="nav-mikopo" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-hand-holding-dollar w-5"></i> Maombi ya Mikopo
+                    </button>
+                    <button onclick="switchTab('marejesho')" id="nav-marejesho" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition">
+                        <i class="fa-solid fa-receipt w-5"></i> Rekodi Marejesho
+                    </button>
+                    <button onclick="switchTab('approval')" id="nav-approval" class="admin-only w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-amber-400 hover:bg-slate-800 transition hidden">
+                        <i class="fa-solid fa-file-circle-check w-5"></i> Uhakiki Mikopo <span id="pendingBadge" class="ml-auto bg-amber-500/20 text-amber-300 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    </button>
+                    <button onclick="switchTab('audit')" id="nav-audit" class="admin-only w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition hidden">
+                        <i class="fa-solid fa-shield-halved w-5"></i> Audit Trail & Logs
+                    </button>
+                </nav>
+            </div>
+
+            <div class="p-4 border-t border-slate-800">
+                <div class="flex items-center gap-3 px-3 py-2 bg-slate-800/50 rounded-xl mb-3">
+                    <div class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xs" id="userAvatar">U</div>
+                    <div class="overflow-hidden">
+                        <p class="text-xs font-bold text-white truncate" id="currentUsername">Afisa1</p>
+                        <p class="text-[10px] text-slate-400 uppercase font-semibold" id="currentUserRole">USER</p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs font-bold rounded-xl transition">
+                    <i class="fa-solid fa-right-from-bracket"></i> Ondoka (Logout)
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
+            
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80">
+                <div>
+                    <h1 id="pageTitle" class="text-2xl font-extrabold text-slate-900 tracking-tight">Dashboard Overview</h1>
+                    <p class="text-slate-500 text-xs mt-0.5">Taarifa na Takwimu za Mfumo wa JF Micro-Credit</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span id="roleBadge" class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full border border-blue-200">AFISA MKOPO</span>
+                </div>
+            </div>
+
+            <!-- TAB 1: DASHBOARD -->
+            <div id="tab-dashboard" class="tab-content space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div class="glass-card p-5 rounded-2xl shadow-sm">
+                        <span class="text-xs font-bold uppercase text-slate-500">Jumla Wateja</span>
+                        <h3 class="text-2xl font-black text-slate-900 mt-2" id="statWateja">0</h3>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl shadow-sm">
+                        <span class="text-xs font-bold uppercase text-slate-500">Fedha Zilizotolewa</span>
+                        <h3 class="text-2xl font-black text-slate-900 mt-2" id="statDisbursed">TZS 0</h3>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl shadow-sm">
+                        <span class="text-xs font-bold uppercase text-slate-500">Jumla Marejesho</span>
+                        <h3 class="text-2xl font-black text-slate-900 mt-2" id="statCollected">TZS 0</h3>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl shadow-sm">
+                        <span class="text-xs font-bold uppercase text-slate-500">Fedha Zilizopo Nje</span>
+                        <h3 class="text-2xl font-black text-slate-900 mt-2" id="statOutstanding">TZS 0</h3>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                    <h4 class="text-base font-bold text-slate-900 mb-4">Mwenendo wa Mikopo na Marejesho</h4>
+                    <div class="h-64"><canvas id="financeChart"></canvas></div>
+                </div>
+            </div>
+
+            <!-- TAB 2: USAJILI WA WATEJA & UPLOAD FORMS -->
+            <div id="tab-wateja" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Form -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4"><i class="fa-solid fa-user-plus text-blue-600 mr-2"></i>Sajili Mteja Mpya</h3>
+                        <form id="clientForm" onsubmit="saveClient(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Jina Kamili</label>
+                                <input type="text" id="cName" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Namba ya Simu</label>
+                                <input type="tel" id="cPhone" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Namba ya NIDA</label>
+                                <input type="text" id="cNida" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Anwani</label>
+                                <input type="text" id="cAddress" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Mdhamini (Guarantor)</label>
+                                <input type="text" id="cGuarantor" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                            </div>
+
+                            <!-- SCAN / UPLOAD FORM PAGES (MINIMUM 4) -->
+                            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                                <label class="block text-xs font-bold text-slate-800">
+                                    <i class="fa-solid fa-file-pdf text-rose-500 mr-1"></i> Scan/Upload Form (Min Pages: 4)
+                                </label>
+                                <p class="text-[11px] text-slate-500">Chagua picha/scans zisizopungua 4 za fomu za mteja zilizojazwa:</p>
+                                <input type="file" id="cDocuments" multiple accept="image/*" required onchange="validateFiles(this)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                <span id="fileCountBadge" class="inline-block text-[11px] font-bold text-amber-600 mt-1">Umechagua kurasa: 0 / 4 minimum</span>
+                            </div>
+
+                            <button type="submit" id="saveClientBtn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md text-sm transition">
+                                Hifadhi Mteja na Fomu
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Client List -->
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">Orodha ya Wateja na Dokumenti Zao</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold">
+                                        <th class="p-3">ID</th>
+                                        <th class="p-3">Jina Kamili</th>
+                                        <th class="p-3">Simu</th>
+                                        <th class="p-3">Fomu Kurasa</th>
+                                        <th class="p-3 text-center">Hatua</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clientTableBody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: MIKOPO -->
+            <div id="tab-mikopo" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4"><i class="fa-solid fa-file-invoice-dollar text-blue-600 mr-2"></i>Omba Mkopo Mpya</h3>
+                        <form id="loanForm" onsubmit="submitLoan(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Mteja</label>
+                                <select id="lClientSelect" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Kiasi cha Mkopo (TZS)</label>
+                                <input type="number" id="lAmount" required min="10000" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 outline-none text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Riba (%)</label>
+                                <input type="number" id="lInterest" value="10" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 outline-none text-sm">
+                            </div>
+                            <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md text-sm transition">Wasilisha Ombi</button>
+                        </form>
+                    </div>
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">Orodha ya Mikopo</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold">
+                                        <th class="p-3">Mteja</th>
+                                        <th class="p-3">Kiasi</th>
+                                        <th class="p-3">Jumla na Riba</th>
+                                        <th class="p-3">Salio</th>
+                                        <th class="p-3">Hali</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="loanTableBody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: MAREJESHO -->
+            <div id="tab-marejesho" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">Rekodi Rejesho Kipya</h3>
+                        <form id="repayForm" onsubmit="submitRepayment(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Mkopo / Mteja</label>
+                                <select id="rLoanSelect" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 outline-none text-sm"></select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Kiasi Kilicholipwa (TZS)</label>
+                                <input type="number" id="rAmount" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 outline-none text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Namba ya Risiti</label>
+                                <input type="text" id="rRef" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 outline-none text-sm">
+                            </div>
+                            <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md text-sm transition">Hifadhi Rejesho</button>
+                        </form>
+                    </div>
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">Historia ya Marejesho</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold">
+                                        <th class="p-3">Tarehe</th>
+                                        <th class="p-3">Mteja</th>
+                                        <th class="p-3">Kiasi</th>
+                                        <th class="p-3">Risiti</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="repayTableBody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: ADMIN APPROVALS -->
+            <div id="tab-approval" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4"><i class="fa-solid fa-file-circle-check text-amber-500 mr-2"></i>Uhakiki Mikopo na Idhini ya Admin</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold">
+                                    <th class="p-3">Tarehe</th>
+                                    <th class="p-3">Mteja</th>
+                                    <th class="p-3">Kiasi</th>
+                                    <th class="p-3">Afisa</th>
+                                    <th class="p-3 text-center">Fomu (Min 4 Pages)</th>
+                                    <th class="p-3 text-center">Hatua</th>
+                                </tr>
+                            </thead>
+                            <tbody id="approvalTableBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 6: AUDIT TRAIL -->
+            <div id="tab-audit" class="tab-content hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4"><i class="fa-solid fa-shield-halved text-blue-600 mr-2"></i>Audit Trail & System Logs</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold">
+                                    <th class="p-3">Muda</th>
+                                    <th class="p-3">User</th>
+                                    <th class="p-3">Role</th>
+                                    <th class="p-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="auditTableBody" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL FOR VIEWING DOCUMENTS (ADMIN & USER) -->
+    <div id="docModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-md hidden p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-3xl w-full p-6 border border-slate-100 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4 border-b pb-3">
+                <h3 class="text-lg font-bold text-slate-900" id="modalClientTitle">Fomu za Mteja</h3>
+                <button onclick="closeDocModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold flex items-center justify-center">✕</button>
+            </div>
+            <div id="modalDocGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Images rendered dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let currentUser = null;
+        let selectedFilesBase64 = [];
+
+        let clients = JSON.parse(localStorage.getItem('jf_clients')) || [];
+        let loans = JSON.parse(localStorage.getItem('jf_loans')) || [];
+        let repayments = JSON.parse(localStorage.getItem('jf_repayments')) || [];
+        let auditLogs = JSON.parse(localStorage.getItem('jf_logs')) || [];
+
+        let chartInstance = null;
+
+        function saveData() {
+            localStorage.setItem('jf_clients', JSON.stringify(clients));
+            localStorage.setItem('jf_loans', JSON.stringify(loans));
+            localStorage.setItem('jf_repayments', JSON.stringify(repayments));
+            localStorage.setItem('jf_logs', JSON.stringify(auditLogs));
+        }
+
+        function addLog(action) {
+            if (!currentUser) return;
+            auditLogs.unshift({
+                timestamp: new Date().toLocaleString('sw-TZ'),
+                user: currentUser.username,
+                role: currentUser.role.toUpperCase(),
+                action: action
+            });
+            saveData();
+        }
+
+        // VALIDATE UPLOAD FILES (MIN 4 PAGES)
+        function validateFiles(input) {
+            const files = input.files;
+            const badge = document.getElementById('fileCountBadge');
+            selectedFilesBase64 = [];
+
+            if (files.length < 4) {
+                badge.className = "inline-block text-[11px] font-bold text-rose-600 mt-1";
+                badge.innerText = `Umechagua kurasa: ${files.length} / 4 MINIMUM (Haitakubaliwa!)`;
+                return;
+            }
+
+            badge.className = "inline-block text-[11px] font-bold text-emerald-600 mt-1";
+            badge.innerText = `Umechagua kurasa: ${files.length} / 4 Minimum (Safi!)`;
+
+            // Convert images to base64 strings
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    selectedFilesBase64.push(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const role = document.getElementById('loginRole').value;
+            const username = document.getElementById('username').value;
+
+            currentUser = { username: username, role: role };
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('appLayout').classList.remove('hidden');
+
+            document.getElementById('currentUsername').innerText = username;
+            document.getElementById('currentUserRole').innerText = role.toUpperCase();
+            document.getElementById('userAvatar').innerText = username.charAt(0).toUpperCase();
+
+            if (role === 'admin') {
+                document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+                document.getElementById('roleBadge').className = "px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full border border-amber-300";
+                document.getElementById('roleBadge').innerText = "MKAGUZI / ADMIN";
+            } else {
+                document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+                document.getElementById('roleBadge').className = "px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full border border-blue-200";
+                document.getElementById('roleBadge').innerText = "AFISA MKOPO";
+            }
+
+            addLog(`Ameingia kwenye mfumo kama ${role.toUpperCase()}`);
+            switchTab('dashboard');
+            renderAll();
+        }
+
+        function logout() {
+            addLog(`Ametoka kwenye mfumo (Logout)`);
+            currentUser = null;
+            document.getElementById('appLayout').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('nav button').forEach(el => {
+                el.classList.remove('bg-slate-800', 'text-white');
+                el.classList.add('text-slate-400');
+            });
+
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if(activeBtn) {
+                activeBtn.classList.add('bg-slate-800', 'text-white');
+                activeBtn.classList.remove('text-slate-400');
+            }
+
+            if(tabId === 'dashboard') renderChart();
+        }
+
+        function saveClient(e) {
+            e.preventDefault();
+
+            if (selectedFilesBase64.length < 4) {
+                alert('Tafadhali upload angalau kurasa/picha 4 za fomu ya mteja!');
+                return;
+            }
+
+            const newClient = {
+                id: 'C-' + Math.floor(100 + Math.random() * 900),
+                name: document.getElementById('cName').value,
+                phone: document.getElementById('cPhone').value,
+                nida: document.getElementById('cNida').value,
+                address: document.getElementById('cAddress').value,
+                guarantor: document.getElementById('cGuarantor').value,
+                documents: selectedFilesBase64,
+                createdBy: currentUser.username
+            };
+
+            clients.push(newClient);
+            addLog(`Amesajili mteja mpya: ${newClient.name} na kupakia fomu zenye kurasa ${newClient.documents.length}`);
+            saveData();
+            document.getElementById('clientForm').reset();
+            document.getElementById('fileCountBadge').innerText = "Umechagua kurasa: 0 / 4 minimum";
+            selectedFilesBase64 = [];
+            renderAll();
+            alert('Mteja na fomu zake vimesajiliwa kikamilifu!');
+        }
+
+        function viewDocs(clientId) {
+            const client = clients.find(c => c.id === clientId);
+            if (!client || !client.documents) return;
+
+            document.getElementById('modalClientTitle').innerText = `Fomu za Mteja: ${client.name} (${client.documents.length} Pages)`;
+            const grid = document.getElementById('modalDocGrid');
+            grid.innerHTML = client.documents.map((doc, idx) => `
+                <div class="border rounded-xl p-2 bg-slate-50 space-y-1">
+                    <span class="text-xs font-bold text-slate-600">Ukurasa wa ${idx + 1}</span>
+                    <img src="${doc}" class="w-full h-auto rounded-lg border shadow-sm">
+                </div>
+            `).join('');
+
+            document.getElementById('docModal').classList.remove('hidden');
+        }
+
+        function closeDocModal() {
+            document.getElementById('docModal').classList.add('hidden');
+        }
+
+        function submitLoan(e) {
+            e.preventDefault();
+            const clientId = document.getElementById('lClientSelect').value;
+            const client = clients.find(c => c.id === clientId);
+            const amount = parseFloat(document.getElementById('lAmount').value);
+            const interest = parseFloat(document.getElementById('lInterest').value);
+
+            const totalPayable = amount + (amount * (interest / 100));
+
+            const newLoan = {
+                id: 'L-' + Math.floor(1000 + Math.random() * 9000),
+                clientId: clientId,
+                clientName: client ? client.name : 'Unknown',
+                amount: amount,
+                interest: interest,
+                totalPayable: totalPayable,
+                balance: totalPayable,
+                status: 'PENDING',
+                requestedBy: currentUser.username,
+                date: new Date().toISOString().split('T')[0]
+            };
+
+            loans.push(newLoan);
+            addLog(`Ameomba mkopo wa TZS ${amount.toLocaleString()} kwa mteja ${newLoan.clientName}`);
+            saveData();
+            document.getElementById('loanForm').reset();
+            renderAll();
+            alert('Ombi la mkopo limewasilishwa kwa Admin!');
+        }
+
+        function submitRepayment(e) {
+            e.preventDefault();
+            const loanId = document.getElementById('rLoanSelect').value;
+            const amount = parseFloat(document.getElementById('rAmount').value);
+            const ref = document.getElementById('rRef').value;
+
+            const loan = loans.find(l => l.id === loanId);
+            if (!loan) return;
+
+            loan.balance -= amount;
+            if (loan.balance <= 0) {
+                loan.balance = 0;
+                loan.status = 'COMPLETED';
+            }
+
+            repayments.push({
+                id: 'R-' + (repayments.length + 1),
+                loanId: loanId,
+                clientName: loan.clientName,
+                amount: amount,
+                ref: ref,
+                collectedBy: currentUser.username,
+                date: new Date().toISOString().split('T')[0]
+            });
+
+            addLog(`Amerekodi rejesho la TZS ${amount.toLocaleString()} kwa mkopo ${loanId}`);
+            saveData();
+            document.getElementById('repayForm').reset();
+            renderAll();
+            alert('Rejesho limerekodiwa kikamilifu!');
+        }
+
+        function approveLoan(loanId) {
+            const loan = loans.find(l => l.id === loanId);
+            if (loan) {
+                loan.status = 'APPROVED';
+                addLog(`Admin ameidhinisha mkopo ${loanId} wa ${loan.clientName}`);
+                saveData();
+                renderAll();
+            }
+        }
+
+        function rejectLoan(loanId) {
+            const loan = loans.find(l => l.id === loanId);
+            if (loan) {
+                loan.status = 'REJECTED';
+                addLog(`Admin amekataa mkopo ${loanId}`);
+                saveData();
+                renderAll();
+            }
+        }
+
+        function renderAll() {
+            document.getElementById('statWateja').innerText = clients.length;
+            const approvedLoans = loans.filter(l => l.status === 'APPROVED' || l.status === 'COMPLETED');
+            document.getElementById('statDisbursed').innerText = 'TZS ' + approvedLoans.reduce((sum, l) => sum + l.amount, 0).toLocaleString();
+            document.getElementById('statCollected').innerText = 'TZS ' + repayments.reduce((sum, r) => sum + r.amount, 0).toLocaleString();
+            document.getElementById('statOutstanding').innerText = 'TZS ' + approvedLoans.reduce((sum, l) => sum + l.balance, 0).toLocaleString();
+
+            const pendingLoans = loans.filter(l => l.status === 'PENDING');
+            document.getElementById('pendingBadge').innerText = pendingLoans.length;
+
+            // Clients Table
+            document.getElementById('clientTableBody').innerHTML = clients.map(c => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3 font-bold">${c.id}</td>
+                    <td class="p-3 font-semibold">${c.name}</td>
+                    <td class="p-3">${c.phone}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 font-bold rounded-md">${c.documents ? c.documents.length : 0} Pages</span></td>
+                    <td class="p-3 text-center">
+                        <button onclick="viewDocs('${c.id}')" class="px-3 py-1 bg-slate-900 text-white font-bold rounded-lg hover:bg-slate-700">Angalia Fomu</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            document.getElementById('lClientSelect').innerHTML = clients.map(c => `<option value="${c.id}">${c.name} (${c.id})</option>`).join('');
+
+            // Loans Table
+            document.getElementById('loanTableBody').innerHTML = loans.map(l => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3 font-bold">${l.clientName}</td>
+                    <td class="p-3">TZS ${l.amount.toLocaleString()}</td>
+                    <td class="p-3">TZS ${l.totalPayable.toLocaleString()}</td>
+                    <td class="p-3 font-bold text-amber-600">TZS ${l.balance.toLocaleString()}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${l.status === 'APPROVED' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}">${l.status}</span></td>
+                </tr>
+            `).join('');
+
+            document.getElementById('rLoanSelect').innerHTML = loans.filter(l => l.status === 'APPROVED').map(l => `<option value="${l.id}">${l.clientName} - Salio: TZS ${l.balance.toLocaleString()}</option>`).join('');
+
+            // Repayments Table
+            document.getElementById('repayTableBody').innerHTML = repayments.map(r => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3 text-slate-500">${r.date}</td>
+                    <td class="p-3 font-bold">${r.clientName}</td>
+                    <td class="p-3 font-bold text-emerald-600">TZS ${r.amount.toLocaleString()}</td>
+                    <td class="p-3 font-mono">${r.ref}</td>
+                </tr>
+            `).join('');
+
+            // Approval Table
+            document.getElementById('approvalTableBody').innerHTML = pendingLoans.map(l => {
+                const client = clients.find(c => c.id === l.clientId);
+                return `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3">${l.date}</td>
+                    <td class="p-3 font-bold">${l.clientName}</td>
+                    <td class="p-3 font-bold text-blue-600">TZS ${l.amount.toLocaleString()}</td>
+                    <td class="p-3">${l.requestedBy}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="viewDocs('${l.clientId}')" class="px-2.5 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold rounded-lg hover:bg-indigo-100">
+                            <i class="fa-solid fa-file-image mr-1"></i> Hakiki Fomu (${client && client.documents ? client.documents.length : 0})
+                        </button>
+                    </td>
+                    <td class="p-3 flex justify-center gap-2">
+                        <button onclick="approveLoan('${l.id}')" class="px-3 py-1 bg-emerald-600 text-white rounded-lg font-bold">Thibitisha</button>
+                        <button onclick="rejectLoan('${l.id}')" class="px-3 py-1 bg-rose-600 text-white rounded-lg font-bold">Kataa</button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+
+            // Audit Logs
+            document.getElementById('auditTableBody').innerHTML = auditLogs.map(log => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3 text-slate-400 font-mono text-[11px]">${log.timestamp}</td>
+                    <td class="p-3 font-bold">${log.user}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${log.role === 'ADMIN' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}">${log.role}</span></td>
+                    <td class="p-3">${log.action}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('financeChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+            const approvedLoans = loans.filter(l => l.status === 'APPROVED' || l.status === 'COMPLETED');
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mikopo', 'Marejesho', 'Nje'],
+                    datasets: [{
+                        data: [
+                            approvedLoans.reduce((sum, l) => sum + l.amount, 0),
+                            repayments.reduce((sum, r) => sum + r.amount, 0),
+                            approvedLoans.reduce((sum, l) => sum + l.balance, 0)
+                        ],
+                        backgroundColor: ['#4f46e5', '#10b981', '#f59e0b'],
+                        borderRadius: 8
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+    </script>
+</body>
+</html>
+
