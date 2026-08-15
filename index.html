@@ -13,94 +13,179 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(229, 231, 235, 0.5); }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
 
-    <!-- LOGIN SCREEN -->
-    <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-md p-4">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 border border-slate-100">
-            <div class="text-center mb-8">
-                <!-- LOGO SEHEMU YA LOGIN -->
-                <div class="w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-                    <img src="jfmicrocreditlogo.png" alt="JF Micro-Credit Logo" class="max-w-full max-h-full object-contain">
+    <!-- 1. LANDING / HOME PAGE -->
+    <div id="homePage" class="min-h-screen flex flex-col justify-between bg-gradient-to-b from-blue-900 via-blue-800 to-slate-900 text-white">
+        <!-- Header -->
+        <header class="max-w-7xl mx-auto w-full p-6 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-white rounded-2xl p-2 shadow-lg flex items-center justify-center">
+                    <img src="jfmicrocreditlogo.png" alt="JF Logo" class="max-w-full max-h-full object-contain">
                 </div>
-                <h1 class="text-2xl font-bold text-slate-900 tracking-tight">JF MICRO-CREDIT DATAS</h1>
-                <p class="text-slate-500 text-sm mt-1">Mfumo wa Kutunza na Kukagua Taarifa za Mikopo</p>
+                <div>
+                    <h1 class="font-extrabold text-lg tracking-wide text-white">JF MICRO-CREDIT</h1>
+                    <span class="text-[10px] bg-emerald-500 text-slate-900 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Datas System</span>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="showAuth('login')" class="px-5 py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-semibold rounded-xl text-sm transition">Ingia (Login)</button>
+                <button onclick="showAuth('register')" class="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl text-sm shadow-lg shadow-emerald-500/20 transition">Jisajili (Sign Up)</button>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <main class="max-w-4xl mx-auto px-6 text-center my-auto py-12">
+            <span class="px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-400/30 text-emerald-400 font-bold text-xs uppercase tracking-widest inline-block mb-6">
+                <i class="fa-solid fa-shield-halved mr-2"></i>Mfumo Salama wa Taarifa za Mikopo
+            </span>
+            <h2 class="text-4xl md:text-6xl font-black text-white leading-tight mb-6">
+                Usimamizi Rahisi na wa Kisasa wa Mikopo na Marejesho
+            </h2>
+            <p class="text-slate-300 text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+                Hifadhi taarifa za wateja, fomu za maombi, kumbukumbu za marejesho, na kagua ripoti kwa urahisi na usalama wa hali ya juu.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto">
+                <button onclick="showAuth('register')" class="px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-2xl text-base shadow-xl shadow-emerald-500/25 transition">
+                    Anza Sasa (Jisajili) <i class="fa-solid fa-arrow-right ml-2"></i>
+                </button>
+                <button onclick="showAuth('login')" class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl text-base shadow-xl shadow-blue-600/30 transition">
+                    Ingia Akaunti
+                </button>
+            </div>
+        </main>
+
+        <!-- Footer / Admin Access Point -->
+        <footer class="w-full border-t border-slate-800 bg-slate-950/60 backdrop-blur-md py-6 px-6">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-400">
+                <p>&copy; 2026 JF Micro-Credit Datas. Haki zote zimehifadhiwa.</p>
+                <button onclick="showAuth('admin-login')" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-emerald-400 hover:text-emerald-300 font-bold rounded-xl transition flex items-center gap-2">
+                    <i class="fa-solid fa-user-shield"></i> Log in as Admin
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 2. AUTHENTICATION MODAL (LOGIN / REGISTER / ADMIN LOGIN) -->
+    <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 border border-slate-100 relative">
+            <button onclick="hideAuth()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 font-bold text-lg">✕</button>
+
+            <!-- LOGO -->
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 mx-auto mb-3 flex items-center justify-center bg-blue-50 rounded-2xl p-2 border border-blue-100">
+                    <img src="jfmicrocreditlogo.png" alt="JF Logo" class="max-w-full max-h-full object-contain">
+                </div>
+                <h3 id="authTitle" class="text-2xl font-extrabold text-blue-900">Ingia Mfumoni</h3>
+                <p id="authSubtitle" class="text-slate-500 text-xs mt-1">Weka taarifa zako kuendelea</p>
             </div>
 
-            <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
+            <!-- LOGIN FORM -->
+            <form id="userLoginForm" onsubmit="handleUserLogin(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Aina ya Mtumiaji / Role</label>
-                    <select id="loginRole" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-slate-700 bg-slate-50 font-medium">
-                        <option value="user">User (Afisa Mkopo / Mtoa Huduma)</option>
-                        <option value="admin">Admin (Msimamizi / Mkaguzi)</option>
-                    </select>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Jina la Mtumiaji (Username)</label>
+                    <input type="text" id="loginUser" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-600 outline-none text-slate-800 bg-slate-50" placeholder="Username">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Jina la Mtumiaji</label>
-                    <input type="text" id="username" required value="afisa1" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-slate-700 bg-slate-50" placeholder="Ingiza username">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Neno la Siri (Password)</label>
+                    <input type="password" id="loginPass" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-600 outline-none text-slate-800 bg-slate-50" placeholder="••••••••">
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Neno la Siri (Password)</label>
-                    <input type="password" id="password" required value="123456" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-slate-700 bg-slate-50" placeholder="••••••••">
-                </div>
+                <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-600/30 transition">
+                    Ingia Mfumoni <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
+                </button>
+                <p class="text-center text-xs text-slate-500 mt-3">Huna akaunti? <a href="#" onclick="showAuth('register')" class="text-blue-600 font-bold hover:underline">Jisajili hapa</a></p>
+            </form>
 
-                <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-blue-600/30 transition">
-                    Ingia Kwenye Mfumo <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
+            <!-- REGISTER FORM -->
+            <form id="userRegisterForm" onsubmit="handleUserRegister(event)" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Jina Kamili</label>
+                    <input type="text" id="regFullName" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-600 outline-none text-slate-800 bg-slate-50" placeholder="Jina Kamili">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Jina la Mtumiaji (Username)</label>
+                    <input type="text" id="regUser" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-600 outline-none text-slate-800 bg-slate-50" placeholder="Username">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Neno la Siri (Password)</label>
+                    <input type="password" id="regPass" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-600 outline-none text-slate-800 bg-slate-50" placeholder="••••••••">
+                </div>
+                <button type="submit" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-xl shadow-lg shadow-emerald-500/20 transition">
+                    Tengeneza Akaunti <i class="fa-solid fa-user-plus ml-2"></i>
+                </button>
+                <p class="text-center text-xs text-slate-500 mt-3">Unayo akaunti tayari? <a href="#" onclick="showAuth('login')" class="text-blue-600 font-bold hover:underline">Ingia hapa</a></p>
+            </form>
+
+            <!-- ADMIN LOGIN FORM -->
+            <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" class="space-y-4 hidden">
+                <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 font-medium mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-lock text-amber-600"></i> Sehemu hii ni kwa Ajili ya Msimamizi/Mkaguzi Tu.
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Admin Username</label>
+                    <input type="text" id="adminUser" value="admin" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-600 outline-none text-slate-800 bg-slate-50" placeholder="Admin username">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Admin Password</label>
+                    <input type="password" id="adminPass" value="admin123" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-600 outline-none text-slate-800 bg-slate-50" placeholder="••••••••">
+                </div>
+                <button type="submit" class="w-full py-3.5 bg-blue-900 hover:bg-slate-900 text-white font-bold rounded-xl shadow-lg transition">
+                    Ingia kama Admin <i class="fa-solid fa-shield-halved ml-2"></i>
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- MAIN APP LAYOUT -->
-    <div id="appLayout" class="hidden min-h-screen flex flex-col md:flex-row">
+    <!-- 3. MAIN DASHBOARD APP LAYOUT -->
+    <div id="appLayout" class="hidden min-h-screen flex flex-col md:flex-row bg-slate-50">
         <!-- SIDEBAR -->
-        <aside class="w-full md:w-64 bg-slate-900 text-slate-300 flex-shrink-0 flex flex-col justify-between border-r border-slate-800">
+        <aside class="w-full md:w-64 bg-blue-950 text-slate-200 flex-shrink-0 flex flex-col justify-between border-r border-blue-900">
             <div>
-                <div class="p-6 flex items-center gap-3 border-b border-slate-800">
-                    <!-- LOGO SEHEMU YA SIDEBAR -->
-                    <div class="w-10 h-10 flex items-center justify-center">
+                <div class="p-6 flex items-center gap-3 border-b border-blue-900/60 bg-blue-900/40">
+                    <div class="w-10 h-10 bg-white rounded-xl p-1.5 flex items-center justify-center shadow-md">
                         <img src="jfmicrocreditlogo.png" alt="JF Logo" class="max-w-full max-h-full object-contain">
                     </div>
                     <div>
-                        <h2 class="font-bold text-white leading-tight text-sm">JF MICRO-CREDIT</h2>
-                        <span class="text-[10px] text-blue-400 font-semibold tracking-wider uppercase">DATAS SYSTEM</span>
+                        <h2 class="font-extrabold text-white leading-tight text-sm tracking-wide">JF MICRO-CREDIT</h2>
+                        <span class="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold px-1.5 py-0.2 rounded uppercase">DATAS SYSTEM</span>
                     </div>
                 </div>
 
                 <nav class="p-4 space-y-1.5">
-                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                        <i class="fa-solid fa-chart-pie w-5"></i> Dashboard
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm text-slate-300 hover:bg-blue-900 hover:text-white transition">
+                        <i class="fa-solid fa-chart-pie w-5 text-blue-400"></i> Dashboard
                     </button>
-                    <button onclick="switchTab('wateja')" id="nav-wateja" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                        <i class="fa-solid fa-users w-5"></i> Sajili Mteja & Fomu
+                    <button onclick="switchTab('wateja')" id="nav-wateja" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm text-slate-300 hover:bg-blue-900 hover:text-white transition">
+                        <i class="fa-solid fa-users w-5 text-blue-400"></i> Sajili Mteja & Fomu
                     </button>
-                    <button onclick="switchTab('mikopo')" id="nav-mikopo" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                        <i class="fa-solid fa-hand-holding-dollar w-5"></i> Maombi ya Mikopo
+                    <button onclick="switchTab('mikopo')" id="nav-mikopo" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm text-slate-300 hover:bg-blue-900 hover:text-white transition">
+                        <i class="fa-solid fa-hand-holding-dollar w-5 text-blue-400"></i> Maombi ya Mikopo
                     </button>
-                    <button onclick="switchTab('marejesho')" id="nav-marejesho" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition">
-                        <i class="fa-solid fa-receipt w-5"></i> Rekodi Marejesho
+                    <button onclick="switchTab('marejesho')" id="nav-marejesho" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm text-slate-300 hover:bg-blue-900 hover:text-white transition">
+                        <i class="fa-solid fa-receipt w-5 text-emerald-400"></i> Rekodi Marejesho
                     </button>
-                    <button onclick="switchTab('approval')" id="nav-approval" class="admin-only w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-amber-400 hover:bg-slate-800 transition hidden">
-                        <i class="fa-solid fa-file-circle-check w-5"></i> Uhakiki Mikopo <span id="pendingBadge" class="ml-auto bg-amber-500/20 text-amber-300 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                    <button onclick="switchTab('approval')" id="nav-approval" class="admin-only w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm text-amber-300 hover:bg-blue-900 transition hidden">
+                        <i class="fa-solid fa-file-circle-check w-5 text-amber-400"></i> Uhakiki Mikopo <span id="pendingBadge" class="ml-auto bg-amber-500 text-slate-950 text-xs px-2 py-0.5 rounded-full font-black">0</span>
                     </button>
-                    <button onclick="switchTab('audit')" id="nav-audit" class="admin-only w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm text-slate-400 hover:bg-slate-800 hover:text-white transition hidden">
-                        <i class="fa-solid fa-shield-halved w-5"></i> Audit Trail & Logs
+                    <button onclick="switchTab('audit')" id="nav-audit" class="admin-only w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm text-slate-300 hover:bg-blue-900 hover:text-white transition hidden">
+                        <i class="fa-solid fa-shield-halved w-5 text-blue-400"></i> Audit Trail & Logs
                     </button>
                 </nav>
             </div>
 
-            <div class="p-4 border-t border-slate-800">
-                <div class="flex items-center gap-3 px-3 py-2 bg-slate-800/50 rounded-xl mb-3">
-                    <div class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xs" id="userAvatar">U</div>
+            <div class="p-4 border-t border-blue-900/60 bg-blue-900/20">
+                <div class="flex items-center gap-3 px-3 py-2 bg-blue-900/50 rounded-xl mb-3 border border-blue-800">
+                    <div class="w-8 h-8 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center font-black text-xs" id="userAvatar">U</div>
                     <div class="overflow-hidden">
-                        <p class="text-xs font-bold text-white truncate" id="currentUsername">Afisa1</p>
-                        <p class="text-[10px] text-slate-400 uppercase font-semibold" id="currentUserRole">USER</p>
+                        <p class="text-xs font-bold text-white truncate" id="currentUsername">User</p>
+                        <p class="text-[10px] text-emerald-400 uppercase font-extrabold" id="currentUserRole">USER</p>
                     </div>
                 </div>
-                <button onclick="logout()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs font-bold rounded-xl transition">
+                <button onclick="logout()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 text-xs font-bold rounded-xl transition border border-rose-500/20">
                     <i class="fa-solid fa-right-from-bracket"></i> Ondoka (Logout)
                 </button>
             </div>
@@ -109,39 +194,39 @@
         <!-- MAIN CONTENT AREA -->
         <main class="flex-1 overflow-y-auto p-4 md:p-8 space-y-6">
             
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                 <div>
-                    <h1 id="pageTitle" class="text-2xl font-extrabold text-slate-900 tracking-tight">Dashboard Overview</h1>
+                    <h1 id="pageTitle" class="text-2xl font-extrabold text-blue-950 tracking-tight">Dashboard Overview</h1>
                     <p class="text-slate-500 text-xs mt-0.5">Taarifa na Takwimu za Mfumo wa JF Micro-Credit</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <span id="roleBadge" class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full border border-blue-200">AFISA MKOPO</span>
+                    <span id="roleBadge" class="px-3.5 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full border border-blue-200">AFISA MKOPO</span>
                 </div>
             </div>
 
             <!-- TAB 1: DASHBOARD -->
             <div id="tab-dashboard" class="tab-content space-y-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                    <div class="glass-card p-5 rounded-2xl shadow-sm">
-                        <span class="text-xs font-bold uppercase text-slate-500">Jumla Wateja</span>
-                        <h3 class="text-2xl font-black text-slate-900 mt-2" id="statWateja">0</h3>
+                    <div class="glass-card p-5 rounded-2xl shadow-sm border-l-4 border-l-blue-600">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Jumla Wateja</span>
+                        <h3 class="text-2xl font-black text-blue-950 mt-2" id="statWateja">0</h3>
                     </div>
-                    <div class="glass-card p-5 rounded-2xl shadow-sm">
-                        <span class="text-xs font-bold uppercase text-slate-500">Fedha Zilizotolewa</span>
-                        <h3 class="text-2xl font-black text-slate-900 mt-2" id="statDisbursed">TZS 0</h3>
+                    <div class="glass-card p-5 rounded-2xl shadow-sm border-l-4 border-l-blue-800">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Fedha Zilizotolewa</span>
+                        <h3 class="text-2xl font-black text-blue-950 mt-2" id="statDisbursed">TZS 0</h3>
                     </div>
-                    <div class="glass-card p-5 rounded-2xl shadow-sm">
-                        <span class="text-xs font-bold uppercase text-slate-500">Jumla Marejesho</span>
-                        <h3 class="text-2xl font-black text-slate-900 mt-2" id="statCollected">TZS 0</h3>
+                    <div class="glass-card p-5 rounded-2xl shadow-sm border-l-4 border-l-emerald-500">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Jumla Marejesho</span>
+                        <h3 class="text-2xl font-black text-emerald-600 mt-2" id="statCollected">TZS 0</h3>
                     </div>
-                    <div class="glass-card p-5 rounded-2xl shadow-sm">
-                        <span class="text-xs font-bold uppercase text-slate-500">Fedha Zilizopo Nje</span>
-                        <h3 class="text-2xl font-black text-slate-900 mt-2" id="statOutstanding">TZS 0</h3>
+                    <div class="glass-card p-5 rounded-2xl shadow-sm border-l-4 border-l-amber-500">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Fedha Zilizopo Nje</span>
+                        <h3 class="text-2xl font-black text-amber-600 mt-2" id="statOutstanding">TZS 0</h3>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-                    <h4 class="text-base font-bold text-slate-900 mb-4">Mwenendo wa Mikopo na Marejesho</h4>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h4 class="text-base font-bold text-blue-950 mb-4">Mwenendo wa Mikopo na Marejesho</h4>
                     <div class="h-64"><canvas id="financeChart"></canvas></div>
                 </div>
             </div>
@@ -149,38 +234,36 @@
             <!-- TAB 2: USAJILI WA WATEJA & UPLOAD FORMS -->
             <div id="tab-wateja" class="tab-content hidden space-y-6">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Form -->
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-                        <h3 class="text-lg font-bold text-slate-900 mb-4"><i class="fa-solid fa-user-plus text-blue-600 mr-2"></i>Sajili Mteja Mpya</h3>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <h3 class="text-lg font-bold text-blue-950 mb-4"><i class="fa-solid fa-user-plus text-blue-600 mr-2"></i>Sajili Mteja Mpya</h3>
                         <form id="clientForm" onsubmit="saveClient(event)" class="space-y-4">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Jina Kamili</label>
-                                <input type="text" id="cName" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                                <input type="text" id="cName" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-600 outline-none text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Namba ya Simu</label>
-                                <input type="tel" id="cPhone" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                                <input type="tel" id="cPhone" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-600 outline-none text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Namba ya NIDA</label>
-                                <input type="text" id="cNida" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                                <input type="text" id="cNida" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-600 outline-none text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Anwani</label>
-                                <input type="text" id="cAddress" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                                <input type="text" id="cAddress" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-600 outline-none text-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Mdhamini (Guarantor)</label>
-                                <input type="text" id="cGuarantor" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                                <input type="text" id="cGuarantor" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-600 outline-none text-sm">
                             </div>
 
-                            <!-- SCAN / UPLOAD FORM PAGES (MINIMUM 4) -->
                             <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
                                 <label class="block text-xs font-bold text-slate-800">
-                                    <i class="fa-solid fa-file-pdf text-rose-500 mr-1"></i> Scan/Upload Form (Min Pages: 4)
+                                    <i class="fa-solid fa-file-pdf text-blue-600 mr-1"></i> Scan/Upload Form (Min Pages: 4)
                                 </label>
-                                <p class="text-[11px] text-slate-500">Chagua picha/scans zisizopungua 4 za fomu za mteja zilizojazwa:</p>
-                                <input type="file" id="cDocuments" multiple accept="image/*" required onchange="validateFiles(this)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                <p class="text-[11px] text-slate-500">Chagua picha/scans zisizopungua 4 za fomu za mteja:</p>
+                                <input type="file" id="cDocuments" multiple accept="image/*" required onchange="validateFiles(this)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                                 <span id="fileCountBadge" class="inline-block text-[11px] font-bold text-amber-600 mt-1">Umechagua kurasa: 0 / 4 minimum</span>
                             </div>
 
@@ -190,9 +273,8 @@
                         </form>
                     </div>
 
-                    <!-- Client List -->
-                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-                        <h3 class="text-lg font-bold text-slate-900 mb-4">Orodha ya Wateja na Dokumenti Zao</h3>
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <h3 class="text-lg font-bold text-blue-950 mb-4">Orodha ya Wateja na Dokumenti Zao</h3>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse text-xs">
                                 <thead>
@@ -214,12 +296,12 @@
             <!-- TAB 3: MIKOPO -->
             <div id="tab-mikopo" class="tab-content hidden space-y-6">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-                        <h3 class="text-lg font-bold text-slate-900 mb-4"><i class="fa-solid fa-file-invoice-dollar text-blue-600 mr-2"></i>Omba Mkopo Mpya</h3>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <h3 class="text-lg font-bold text-blue-950 mb-4"><i class="fa-solid fa-file-invoice-dollar text-blue-600 mr-2"></i>Omba Mkopo Mpya</h3>
                         <form id="loanForm" onsubmit="submitLoan(event)" class="space-y-4">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Mteja</label>
-                                <select id="lClientSelect" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"></select>
+                                <select id="lClientSelect" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-600 outline-none text-sm"></select>
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Kiasi cha Mkopo (TZS)</label>
@@ -232,8 +314,8 @@
                             <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md text-sm transition">Wasilisha Ombi</button>
                         </form>
                     </div>
-                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-                        <h3 class="text-lg font-bold text-slate-900 mb-4">Orodha ya Mikopo</h3>
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <h3 class="text-lg font-bold text-blue-950 mb-4">Orodha ya Mikopo</h3>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse text-xs">
                                 <thead>
@@ -255,8 +337,8 @@
             <!-- TAB 4: MAREJESHO -->
             <div id="tab-marejesho" class="tab-content hidden space-y-6">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-                        <h3 class="text-lg font-bold text-slate-900 mb-4">Rekodi Rejesho Kipya</h3>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <h3 class="text-lg font-bold text-blue-950 mb-4">Rekodi Rejesho Kipya</h3>
                         <form id="repayForm" onsubmit="submitRepayment(event)" class="space-y-4">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Mkopo / Mteja</label>
@@ -270,11 +352,11 @@
                                 <label class="block text-xs font-semibold text-slate-600 mb-1">Namba ya Risiti</label>
                                 <input type="text" id="rRef" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 outline-none text-sm">
                             </div>
-                            <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md text-sm transition">Hifadhi Rejesho</button>
+                            <button type="submit" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-xl shadow-md text-sm transition">Hifadhi Rejesho</button>
                         </form>
                     </div>
-                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-                        <h3 class="text-lg font-bold text-slate-900 mb-4">Historia ya Marejesho</h3>
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                        <h3 class="text-lg font-bold text-blue-950 mb-4">Historia ya Marejesho</h3>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse text-xs">
                                 <thead>
@@ -294,8 +376,8 @@
 
             <!-- TAB 5: ADMIN APPROVALS -->
             <div id="tab-approval" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-                    <h3 class="text-lg font-bold text-slate-900 mb-4"><i class="fa-solid fa-file-circle-check text-amber-500 mr-2"></i>Uhakiki Mikopo na Idhini ya Admin</h3>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="text-lg font-bold text-blue-950 mb-4"><i class="fa-solid fa-file-circle-check text-amber-500 mr-2"></i>Uhakiki Mikopo na Idhini ya Admin</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-xs">
                             <thead>
@@ -316,8 +398,8 @@
 
             <!-- TAB 6: AUDIT TRAIL -->
             <div id="tab-audit" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
-                    <h3 class="text-lg font-bold text-slate-900 mb-4"><i class="fa-solid fa-shield-halved text-blue-600 mr-2"></i>Audit Trail & System Logs</h3>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="text-lg font-bold text-blue-950 mb-4"><i class="fa-solid fa-shield-halved text-blue-600 mr-2"></i>Audit Trail & System Logs</h3>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse text-xs">
                             <thead>
@@ -337,11 +419,11 @@
         </main>
     </div>
 
-    <!-- MODAL FOR VIEWING DOCUMENTS (ADMIN & USER) -->
-    <div id="docModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-md hidden p-4">
+    <!-- MODAL FOR VIEWING DOCUMENTS -->
+    <div id="docModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden p-4">
         <div class="bg-white rounded-3xl shadow-2xl max-w-3xl w-full p-6 border border-slate-100 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4 border-b pb-3">
-                <h3 class="text-lg font-bold text-slate-900" id="modalClientTitle">Fomu za Mteja</h3>
+                <h3 class="text-lg font-bold text-blue-950" id="modalClientTitle">Fomu za Mteja</h3>
                 <button onclick="closeDocModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold flex items-center justify-center">✕</button>
             </div>
             <div id="modalDocGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -355,6 +437,7 @@
         let currentUser = null;
         let selectedFilesBase64 = [];
 
+        let registeredUsers = JSON.parse(localStorage.getItem('jf_registered_users')) || [];
         let clients = JSON.parse(localStorage.getItem('jf_clients')) || [];
         let loans = JSON.parse(localStorage.getItem('jf_loans')) || [];
         let repayments = JSON.parse(localStorage.getItem('jf_repayments')) || [];
@@ -363,6 +446,7 @@
         let chartInstance = null;
 
         function saveData() {
+            localStorage.setItem('jf_registered_users', JSON.stringify(registeredUsers));
             localStorage.setItem('jf_clients', JSON.stringify(clients));
             localStorage.setItem('jf_loans', JSON.stringify(loans));
             localStorage.setItem('jf_repayments', JSON.stringify(repayments));
@@ -380,7 +464,130 @@
             saveData();
         }
 
-        // VALIDATE UPLOAD FILES (MIN 4 PAGES)
+        // SHOW/HIDE AUTH MODALS
+        function showAuth(type) {
+            document.getElementById('authModal').classList.remove('hidden');
+            document.getElementById('userLoginForm').classList.add('hidden');
+            document.getElementById('userRegisterForm').classList.add('hidden');
+            document.getElementById('adminLoginForm').classList.add('hidden');
+
+            if (type === 'login') {
+                document.getElementById('authTitle').innerText = 'Ingia Mfumoni';
+                document.getElementById('authSubtitle').innerText = 'Weka taarifa zako kuendelea';
+                document.getElementById('userLoginForm').classList.remove('hidden');
+            } else if (type === 'register') {
+                document.getElementById('authTitle').innerText = 'Jisajili Kama Mtumiaji';
+                document.getElementById('authSubtitle').innerText = 'Jaza fomu ifuatayo kutengeneza akaunti';
+                document.getElementById('userRegisterForm').classList.remove('hidden');
+            } else if (type === 'admin-login') {
+                document.getElementById('authTitle').innerText = 'Admin Authentication';
+                document.getElementById('authSubtitle').innerText = 'Kuingia kwa Msimamizi / Mkaguzi Mkuu';
+                document.getElementById('adminLoginForm').classList.remove('hidden');
+            }
+        }
+
+        function hideAuth() {
+            document.getElementById('authModal').classList.add('hidden');
+        }
+
+        // USER REGISTER LOGIC
+        function handleUserRegister(e) {
+            e.preventDefault();
+            const fullname = document.getElementById('regFullName').value;
+            const username = document.getElementById('regUser').value;
+            const password = document.getElementById('regPass').value;
+
+            if (registeredUsers.some(u => u.username === username)) {
+                alert('Jina hili la mtumiaji (Username) tayari limeshatumika!');
+                return;
+            }
+
+            registeredUsers.push({ fullname, username, password, role: 'user' });
+            saveData();
+
+            alert('Akaunti yako imetengenezwa kikamilifu! Sasa unaweza kuingia.');
+            showAuth('login');
+        }
+
+        // USER LOGIN LOGIC
+        function handleUserLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUser').value;
+            const password = document.getElementById('loginPass').value;
+
+            const foundUser = registeredUsers.find(u => u.username === username && u.password === password) || (username === 'afisa1' && password === '123456');
+
+            if (!foundUser) {
+                alert('Jina la mtumiaji au Neno la siri sio sahihi!');
+                return;
+            }
+
+            currentUser = { username: username, role: 'user' };
+            startSession();
+        }
+
+        // ADMIN LOGIN LOGIC
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('adminUser').value;
+            const password = document.getElementById('adminPass').value;
+
+            if (username === 'admin' && password === 'admin123') {
+                currentUser = { username: username, role: 'admin' };
+                startSession();
+            } else {
+                alert('Taarifa za Admin sio sahihi!');
+            }
+        }
+
+        function startSession() {
+            hideAuth();
+            document.getElementById('homePage').classList.add('hidden');
+            document.getElementById('appLayout').classList.remove('hidden');
+
+            document.getElementById('currentUsername').innerText = currentUser.username;
+            document.getElementById('currentUserRole').innerText = currentUser.role.toUpperCase();
+            document.getElementById('userAvatar').innerText = currentUser.username.charAt(0).toUpperCase();
+
+            if (currentUser.role === 'admin') {
+                document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+                document.getElementById('roleBadge').className = "px-3.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full border border-emerald-300";
+                document.getElementById('roleBadge').innerText = "MKAGUZI / ADMIN";
+            } else {
+                document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+                document.getElementById('roleBadge').className = "px-3.5 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full border border-blue-200";
+                document.getElementById('roleBadge').innerText = "AFISA MKOPO";
+            }
+
+            addLog(`Ameingia kwenye mfumo kama ${currentUser.role.toUpperCase()}`);
+            switchTab('dashboard');
+            renderAll();
+        }
+
+        function logout() {
+            addLog(`Ametoka kwenye mfumo (Logout)`);
+            currentUser = null;
+            document.getElementById('appLayout').classList.add('hidden');
+            document.getElementById('homePage').classList.remove('hidden');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('nav button').forEach(el => {
+                el.classList.remove('bg-blue-900', 'text-white');
+                el.classList.add('text-slate-300');
+            });
+
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if(activeBtn) {
+                activeBtn.classList.add('bg-blue-900', 'text-white');
+                activeBtn.classList.remove('text-slate-300');
+            }
+
+            if(tabId === 'dashboard') renderChart();
+        }
+
         function validateFiles(input) {
             const files = input.files;
             const badge = document.getElementById('fileCountBadge');
@@ -395,7 +602,6 @@
             badge.className = "inline-block text-[11px] font-bold text-emerald-600 mt-1";
             badge.innerText = `Umechagua kurasa: ${files.length} / 4 Minimum (Safi!)`;
 
-            // Convert images to base64 strings
             Array.from(files).forEach(file => {
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -403,58 +609,6 @@
                 };
                 reader.readAsDataURL(file);
             });
-        }
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const role = document.getElementById('loginRole').value;
-            const username = document.getElementById('username').value;
-
-            currentUser = { username: username, role: role };
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('appLayout').classList.remove('hidden');
-
-            document.getElementById('currentUsername').innerText = username;
-            document.getElementById('currentUserRole').innerText = role.toUpperCase();
-            document.getElementById('userAvatar').innerText = username.charAt(0).toUpperCase();
-
-            if (role === 'admin') {
-                document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
-                document.getElementById('roleBadge').className = "px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full border border-amber-300";
-                document.getElementById('roleBadge').innerText = "MKAGUZI / ADMIN";
-            } else {
-                document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
-                document.getElementById('roleBadge').className = "px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full border border-blue-200";
-                document.getElementById('roleBadge').innerText = "AFISA MKOPO";
-            }
-
-            addLog(`Ameingia kwenye mfumo kama ${role.toUpperCase()}`);
-            switchTab('dashboard');
-            renderAll();
-        }
-
-        function logout() {
-            addLog(`Ametoka kwenye mfumo (Logout)`);
-            currentUser = null;
-            document.getElementById('appLayout').classList.add('hidden');
-            document.getElementById('loginScreen').classList.remove('hidden');
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('nav button').forEach(el => {
-                el.classList.remove('bg-slate-800', 'text-white');
-                el.classList.add('text-slate-400');
-            });
-
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`nav-${tabId}`);
-            if(activeBtn) {
-                activeBtn.classList.add('bg-slate-800', 'text-white');
-                activeBtn.classList.remove('text-slate-400');
-            }
-
-            if(tabId === 'dashboard') renderChart();
         }
 
         function saveClient(e) {
@@ -604,9 +758,9 @@
                     <td class="p-3 font-bold">${c.id}</td>
                     <td class="p-3 font-semibold">${c.name}</td>
                     <td class="p-3">${c.phone}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 font-bold rounded-md">${c.documents ? c.documents.length : 0} Pages</span></td>
+                    <td class="p-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-800 font-bold rounded-md">${c.documents ? c.documents.length : 0} Pages</span></td>
                     <td class="p-3 text-center">
-                        <button onclick="viewDocs('${c.id}')" class="px-3 py-1 bg-slate-900 text-white font-bold rounded-lg hover:bg-slate-700">Angalia Fomu</button>
+                        <button onclick="viewDocs('${c.id}')" class="px-3 py-1 bg-blue-950 text-white font-bold rounded-lg hover:bg-blue-900">Angalia Fomu</button>
                     </td>
                 </tr>
             `).join('');
@@ -620,7 +774,7 @@
                     <td class="p-3">TZS ${l.amount.toLocaleString()}</td>
                     <td class="p-3">TZS ${l.totalPayable.toLocaleString()}</td>
                     <td class="p-3 font-bold text-amber-600">TZS ${l.balance.toLocaleString()}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${l.status === 'APPROVED' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}">${l.status}</span></td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${l.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${l.status}</span></td>
                 </tr>
             `).join('');
 
@@ -651,7 +805,7 @@
                         </button>
                     </td>
                     <td class="p-3 flex justify-center gap-2">
-                        <button onclick="approveLoan('${l.id}')" class="px-3 py-1 bg-emerald-600 text-white rounded-lg font-bold">Thibitisha</button>
+                        <button onclick="approveLoan('${l.id}')" class="px-3 py-1 bg-emerald-500 text-slate-950 font-extrabold rounded-lg">Thibitisha</button>
                         <button onclick="rejectLoan('${l.id}')" class="px-3 py-1 bg-rose-600 text-white rounded-lg font-bold">Kataa</button>
                     </td>
                 </tr>
@@ -683,7 +837,7 @@
                             repayments.reduce((sum, r) => sum + r.amount, 0),
                             approvedLoans.reduce((sum, l) => sum + l.balance, 0)
                         ],
-                        backgroundColor: ['#4f46e5', '#10b981', '#f59e0b'],
+                        backgroundColor: ['#1e40af', '#10b981', '#f59e0b'],
                         borderRadius: 8
                     }]
                 },
