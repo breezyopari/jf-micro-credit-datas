@@ -16,12 +16,13 @@
         .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); }
         .bottom-nav-active { color: #2563eb; font-weight: 700; }
         .bottom-nav-active i { transform: translateY(-2px); color: #2563eb; }
+        .admin-tab-active { background-color: #2563eb; color: #ffffff; }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen pb-20 md:pb-0">
 
     <!-- 1. LANDING / HOME PAGE -->
-    <div id="homePage" class="min-h-screen flex flex-col justify-between bg-gradient-to-b from-blue-950 via-blue-900 to-slate-900 text-white">
+    <div id="homePage" class="relative min-h-screen flex flex-col justify-between bg-gradient-to-b from-blue-950 via-blue-900 to-slate-900 text-white">
         <!-- Header -->
         <header class="max-w-7xl mx-auto w-full p-6 flex justify-between items-center">
             <div class="flex items-center gap-3">
@@ -53,7 +54,7 @@
 
             <div class="flex flex-col sm:flex-row justify-center gap-3 max-w-sm mx-auto">
                 <button onclick="showAuth('login')" class="px-6 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-2xl text-sm shadow-xl shadow-emerald-500/20 transition flex items-center justify-center gap-2">
-                    Ingia Mfumoni <i class="fa-solid fa-arrow-right"></i>
+                    Ingia <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </div>
         </main>
@@ -62,6 +63,12 @@
         <footer class="w-full border-t border-slate-800/80 bg-slate-950/80 backdrop-blur-md py-4 px-6 text-center">
             <p class="text-[11px] text-slate-400">&copy; 2026 JF Micro-Credit. Haki zote zimehifadhiwa.</p>
         </footer>
+
+        <!-- ADMIN FLOATING BUTTON CHINI KULIA -->
+        <button onclick="openAdminModal()" class="fixed bottom-6 right-6 z-40 px-5 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black rounded-full shadow-2xl shadow-amber-500/30 border-2 border-amber-300/40 flex items-center gap-2.5 transition-all transform hover:scale-105 active:scale-95 text-xs uppercase tracking-wider">
+            <i class="fa-solid fa-shield-halved text-base"></i>
+            <span>Admin Panel</span>
+        </button>
     </div>
 
     <!-- 2. AUTHENTICATION MODAL -->
@@ -73,7 +80,7 @@
                 <div class="w-14 h-14 mx-auto mb-2 flex items-center justify-center bg-blue-50 rounded-2xl p-2 border border-blue-100">
                     <img src="jfmicrocreditlogo.png" alt="JF Logo" class="max-w-full max-h-full object-contain">
                 </div>
-                <h3 id="authTitle" class="text-xl font-extrabold text-blue-950">Ingia Mfumoni</h3>
+                <h3 id="authTitle" class="text-xl font-extrabold text-blue-950">Ingia</h3>
                 <p id="authSubtitle" class="text-slate-500 text-xs mt-1">Weka taarifa zako kuendelea</p>
             </div>
 
@@ -88,7 +95,7 @@
                     <input type="password" id="loginPass" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600">
                 </div>
                 <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition text-sm">
-                    Ingia Mfumoni <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
+                    Ingia <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
                 </button>
                 <p class="text-center text-xs text-slate-500 mt-2">Huna akaunti? <a href="#" onclick="showAuth('register')" class="text-blue-600 font-bold hover:underline">Jisajili hapa</a></p>
             </form>
@@ -115,7 +122,105 @@
         </div>
     </div>
 
-    <!-- 3. MAIN APP LAYOUT -->
+    <!-- 3. ADMIN PANEL MODAL (MODERN DASHBOARD) -->
+    <div id="adminModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-lg hidden p-3 md:p-6">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-5xl w-full h-[90vh] flex flex-col border border-slate-200 overflow-hidden relative">
+            
+            <!-- ADMIN HEADER -->
+            <div class="bg-slate-900 text-white p-4 md:p-5 flex justify-between items-center border-b border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-amber-500 text-slate-950 rounded-2xl flex items-center justify-center font-black text-lg shadow-lg">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-base tracking-wide text-white">ADMIN CONTROL PANEL</h3>
+                        <p class="text-[10px] text-slate-400">Usimamizi wa Maombi, Fomu na Uhakiki wa Mikopo</p>
+                    </div>
+                </div>
+                <button onclick="closeAdminModal()" class="w-9 h-9 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 font-bold flex items-center justify-center text-sm transition">✕</button>
+            </div>
+
+            <!-- ADMIN NAVIGATION -->
+            <div class="bg-slate-100 p-2 border-b border-slate-200 flex gap-2 overflow-x-auto">
+                <button onclick="switchAdminTab('pending-loans')" id="adminNav-pending-loans" class="admin-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-white text-slate-700 shadow-sm">
+                    <i class="fa-solid fa-clock-rotate-left text-amber-500"></i> Maombi ya Mikopo
+                </button>
+                <button onclick="switchAdminTab('user-forms')" id="adminNav-user-forms" class="admin-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-slate-200/60 text-slate-600 hover:bg-white">
+                    <i class="fa-solid fa-folder-open text-blue-500"></i> Fomu Zilizopandishwa
+                </button>
+                <button onclick="switchAdminTab('all-loans')" id="adminNav-all-loans" class="admin-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-slate-200/60 text-slate-600 hover:bg-white">
+                    <i class="fa-solid fa-list-check text-emerald-500"></i> Historia ya Mikopo
+                </button>
+            </div>
+
+            <!-- ADMIN BODY CONTENT -->
+            <div class="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50">
+                
+                <!-- TAB A: MAOMBI YA MIKOPO (APPROVAL / REJECTION) -->
+                <div id="adminTab-pending-loans" class="admin-tab-content space-y-4">
+                    <div class="flex justify-between items-center bg-amber-50 border border-amber-200 p-4 rounded-2xl">
+                        <div>
+                            <h4 class="text-sm font-extrabold text-amber-900">Uhakiki wa Maombi</h4>
+                            <p class="text-xs text-amber-700">Thibitisha au kataa maombi yaliyowasilishwa na watumiaji.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-200 bg-slate-100 text-slate-700 font-bold uppercase">
+                                        <th class="p-3">ID Ya Mkopo</th>
+                                        <th class="p-3">Mteja</th>
+                                        <th class="p-3">Kiasi</th>
+                                        <th class="p-3">Jumla ya Kurudisha</th>
+                                        <th class="p-3">Tarehe</th>
+                                        <th class="p-3 text-center">Hatua</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminPendingLoansTable" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB B: USER FORMS & DOCUMENTS -->
+                <div id="adminTab-user-forms" class="admin-tab-content hidden space-y-4">
+                    <div class="flex justify-between items-center bg-blue-50 border border-blue-200 p-4 rounded-2xl">
+                        <div>
+                            <h4 class="text-sm font-extrabold text-blue-900">Fomu na Nyaraka za Watumiaji</h4>
+                            <p class="text-xs text-blue-700">Kagua fomu zilizo-upload-iwa na kila mteja kwa kina.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="adminUserFormsGrid"></div>
+                </div>
+
+                <!-- TAB C: HISTORIA YA MIKOPO YOTE -->
+                <div id="adminTab-all-loans" class="admin-tab-content hidden space-y-4">
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-slate-200 bg-slate-100 text-slate-700 font-bold uppercase">
+                                        <th class="p-3">ID</th>
+                                        <th class="p-3">Mteja</th>
+                                        <th class="p-3">Kiasi</th>
+                                        <th class="p-3">Salio</th>
+                                        <th class="p-3">Hali</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminAllLoansTable" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. MAIN APP LAYOUT -->
     <div id="appLayout" class="hidden min-h-screen flex flex-col bg-slate-100">
         
         <!-- TOP APP BAR -->
@@ -126,7 +231,6 @@
                 </div>
                 <div>
                     <h2 class="font-black text-sm tracking-wide leading-tight">JF MICRO-CREDIT</h2>
-                    <span class="text-[9px] text-emerald-400 font-bold uppercase tracking-wider">Mfumo wa Ndani</span>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -359,7 +463,7 @@
                     </button>
                 </div>
 
-                <!-- ADMIN APPROVALS SECTION (Visible only for admin) -->
+                <!-- ADMIN APPROVALS SECTION (Visible inside app if logged as admin) -->
                 <div id="adminApprovalSection" class="admin-only bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hidden">
                     <h3 class="text-sm font-bold text-slate-900 mb-3 text-amber-600"><i class="fa-solid fa-shield-halved mr-1"></i> Uhakiki wa Mikopo (Admin Only)</h3>
                     <div class="overflow-x-auto">
@@ -379,7 +483,7 @@
 
         </main>
 
-        <!-- 4. BOTTOM NAVIGATION BAR (MOBILE & DESKTOP SUITED) -->
+        <!-- 5. BOTTOM NAVIGATION BAR (MOBILE & DESKTOP SUITED) -->
         <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-3 py-2 z-40 shadow-lg">
             <div class="max-w-md mx-auto flex justify-around items-center">
                 <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-1 text-[10px] font-semibold text-slate-400 hover:text-blue-600 transition">
@@ -438,13 +542,96 @@
             localStorage.setItem('jf_repayments', JSON.stringify(repayments));
         }
 
+        /* ADMIN MODAL LOGIC */
+        function openAdminModal() {
+            document.getElementById('adminModal').classList.remove('hidden');
+            renderAdminPanel();
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        function switchAdminTab(tab) {
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-slate-700', 'shadow-sm');
+                btn.classList.add('bg-slate-200/60', 'text-slate-600');
+            });
+
+            document.getElementById(`adminTab-${tab}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`adminNav-${tab}`);
+            if (activeNav) {
+                activeNav.classList.remove('bg-slate-200/60', 'text-slate-600');
+                activeNav.classList.add('bg-white', 'text-slate-700', 'shadow-sm');
+            }
+        }
+
+        function renderAdminPanel() {
+            const pendingLoans = loans.filter(l => l.status === 'PENDING');
+            
+            // Pending Loans Table
+            const pendingTable = document.getElementById('adminPendingLoansTable');
+            if(pendingLoans.length === 0) {
+                pendingTable.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 italic">Hakuna maombi mapya ya mikopo kwa sasa.</td></tr>`;
+            } else {
+                pendingTable.innerHTML = pendingLoans.map(l => `
+                    <tr class="hover:bg-slate-50">
+                        <td class="p-3 font-bold text-slate-800">${l.id}</td>
+                        <td class="p-3 font-semibold text-slate-700">${l.clientName}</td>
+                        <td class="p-3 font-bold text-blue-600">TZS ${l.amount.toLocaleString()}</td>
+                        <td class="p-3 font-bold text-slate-800">TZS ${l.totalPayable.toLocaleString()}</td>
+                        <td class="p-3 text-slate-500">${l.date}</td>
+                        <td class="p-3 flex justify-center gap-1.5">
+                            <button onclick="approveLoan('${l.id}')" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black rounded-lg text-[11px] shadow transition">Kukubali</button>
+                            <button onclick="rejectLoan('${l.id}')" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg text-[11px] shadow transition">Kukataa</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            // User Forms Grid
+            const formsGrid = document.getElementById('adminUserFormsGrid');
+            if (clients.length === 0) {
+                formsGrid.innerHTML = `<p class="text-xs text-slate-400 italic col-span-2 text-center py-6">Hakuna fomu za wateja zilizopandishwa bado.</p>`;
+            } else {
+                formsGrid.innerHTML = clients.map(c => `
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h5 class="font-extrabold text-slate-800 text-xs">${c.name}</h5>
+                                <span class="text-[10px] text-slate-400">ID: ${c.id} | Simu: ${c.phone}</span>
+                            </div>
+                            <span class="px-2 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold rounded-lg border border-blue-100">
+                                Kurasa ${c.documents ? c.documents.length : 0}
+                            </span>
+                        </div>
+                        <button onclick="viewDocs('${c.id}')" class="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-eye"></i> Tazama Fomu Zote
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            // All Loans
+            document.getElementById('adminAllLoansTable').innerHTML = loans.map(l => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-3 font-bold text-slate-800">${l.id}</td>
+                    <td class="p-3 font-semibold text-slate-700">${l.clientName}</td>
+                    <td class="p-3">TZS ${l.amount.toLocaleString()}</td>
+                    <td class="p-3 font-bold text-amber-600">TZS ${l.balance.toLocaleString()}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${l.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' : (l.status === 'REJECTED' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800')}">${l.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
         function showAuth(type) {
             document.getElementById('authModal').classList.remove('hidden');
             document.getElementById('userLoginForm').classList.add('hidden');
             document.getElementById('userRegisterForm').classList.add('hidden');
 
             if (type === 'login') {
-                document.getElementById('authTitle').innerText = 'Ingia Mfumoni';
+                document.getElementById('authTitle').innerText = 'Ingia';
                 document.getElementById('authSubtitle').innerText = 'Weka taarifa zako kuendelea';
                 document.getElementById('userLoginForm').classList.remove('hidden');
             } else if (type === 'register') {
@@ -598,6 +785,7 @@
             document.getElementById('fileCountBadge').innerText = "Kurasa: 0 / 4 minimum";
             selectedFilesBase64 = [];
             renderAll();
+            renderAdminPanel();
             alert('Mteja amesajiliwa kikamilifu!');
         }
 
@@ -643,6 +831,7 @@
             saveData();
             document.getElementById('loanForm').reset();
             renderAll();
+            renderAdminPanel();
             alert('Ombi la mkopo limewasilishwa!');
         }
 
@@ -672,6 +861,7 @@
             saveData();
             document.getElementById('repayForm').reset();
             renderAll();
+            renderAdminPanel();
             alert('Rejesho limerekodiwa!');
         }
 
@@ -681,6 +871,7 @@
                 loan.status = 'APPROVED';
                 saveData();
                 renderAll();
+                renderAdminPanel();
             }
         }
 
@@ -690,6 +881,7 @@
                 loan.status = 'REJECTED';
                 saveData();
                 renderAll();
+                renderAdminPanel();
             }
         }
 
