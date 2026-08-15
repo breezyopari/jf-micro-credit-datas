@@ -3,27 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JF MICRO-CREDIT DATAS | Mfumo wa Taarifa za Mikopo</title>
-    <!-- Tailwind CSS CDN -->
+    <title>JF MICRO-CREDIT DATAS | Portal ya Afisa</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); }
         .bottom-nav-active { color: #2563eb; font-weight: 700; }
         .bottom-nav-active i { transform: translateY(-2px); color: #2563eb; }
-        .admin-tab-active { background-color: #2563eb; color: #ffffff; }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen pb-20 md:pb-0">
 
-    <!-- 1. LANDING / HOME PAGE -->
+    <!-- LANDING / HOME PAGE -->
     <div id="homePage" class="relative min-h-screen flex flex-col justify-between bg-gradient-to-b from-blue-950 via-blue-900 to-slate-900 text-white">
-        <!-- Header -->
         <header class="max-w-7xl mx-auto w-full p-6 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-white rounded-2xl p-1.5 shadow-lg flex items-center justify-center">
@@ -31,7 +25,7 @@
                 </div>
                 <div>
                     <h1 class="font-extrabold text-base tracking-wide text-white">JF MICRO-CREDIT</h1>
-                    <span class="text-[9px] bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-full font-black uppercase tracking-wider">Datas System</span>
+                    <span class="text-[9px] bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-full font-black uppercase tracking-wider">Afisa Portal</span>
                 </div>
             </div>
             <div class="flex gap-2">
@@ -40,932 +34,187 @@
             </div>
         </header>
 
-        <!-- Hero Section -->
         <main class="max-w-2xl mx-auto px-6 text-center my-auto py-12">
             <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-3xl mx-auto mb-6 p-4 border border-white/20 flex items-center justify-center shadow-2xl">
                 <i class="fa-solid fa-wallet text-4xl text-emerald-400"></i>
             </div>
             <h2 class="text-3xl md:text-5xl font-black text-white leading-tight mb-4">
-                Karibu JF Micro-Credit
+                Karibu Portal ya Maafisa
             </h2>
             <p class="text-slate-300 text-sm md:text-base max-w-md mx-auto mb-8 leading-relaxed font-normal">
-                Mfumo wako rahisi, wa haraka na salama kwa ajili ya usimamizi wa mikopo, wateja na marejesho.
+                Mfumo wa usimamizi wa mikopo, usajili wa wateja na marejesho kwa Maafisa wa JF Micro-Credit.
             </p>
-
-            <div class="flex flex-col sm:flex-row justify-center gap-3 max-w-sm mx-auto">
+            <div class="flex justify-center gap-3 max-w-sm mx-auto">
                 <button onclick="showAuth('login')" class="px-6 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-2xl text-sm shadow-xl shadow-emerald-500/20 transition flex items-center justify-center gap-2">
-                    Ingia <i class="fa-solid fa-arrow-right"></i>
+                    Ingia Portal <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </div>
         </main>
 
-        <!-- Footer -->
-        <footer class="w-full border-t border-slate-800/80 bg-slate-950/80 backdrop-blur-md py-4 px-6 text-center">
+        <footer class="w-full border-t border-slate-800/80 bg-slate-950/80 backdrop-blur-md py-4 px-6 text-center flex justify-between items-center max-w-7xl mx-auto">
             <p class="text-[11px] text-slate-400">&copy; 2026 JF Micro-Credit. Haki zote zimehifadhiwa.</p>
+            <a href="admin.html" class="text-xs text-amber-400 font-bold hover:underline flex items-center gap-1">
+                <i class="fa-solid fa-user-shield"></i> Nenda Admin Panel
+            </a>
         </footer>
-
-        <!-- ADMIN FLOATING BUTTON CHINI KULIA -->
-        <button onclick="openAdminModal()" class="fixed bottom-6 right-6 z-40 px-5 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black rounded-full shadow-2xl shadow-amber-500/30 border-2 border-amber-300/40 flex items-center gap-2.5 transition-all transform hover:scale-105 active:scale-95 text-xs uppercase tracking-wider">
-            <i class="fa-solid fa-shield-halved text-base"></i>
-            <span>Admin Panel</span>
-        </button>
     </div>
 
-    <!-- 2. AUTHENTICATION MODAL -->
+    <!-- AUTHENTICATION MODAL -->
     <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden p-4">
         <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 border border-slate-100 relative">
             <button onclick="hideAuth()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 font-bold text-base">✕</button>
-
             <div class="text-center mb-6">
-                <div class="w-14 h-14 mx-auto mb-2 flex items-center justify-center bg-blue-50 rounded-2xl p-2 border border-blue-100">
-                    <img src="jfmicrocreditlogo.png" alt="JF Logo" class="max-w-full max-h-full object-contain">
-                </div>
-                <h3 id="authTitle" class="text-xl font-extrabold text-blue-950">Ingia</h3>
-                <p id="authSubtitle" class="text-slate-500 text-xs mt-1">Weka taarifa zako kuendelea</p>
+                <h3 id="authTitle" class="text-xl font-extrabold text-blue-950">Ingia Afisa</h3>
+                <p id="authSubtitle" class="text-slate-500 text-xs mt-1">Ingiza taarifa zako za Afisa kuendelea</p>
             </div>
 
-            <!-- LOGIN FORM -->
             <form id="userLoginForm" onsubmit="handleUserLogin(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Username</label>
-                    <input type="text" id="loginUser" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600">
+                    <input type="text" id="loginUser" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none text-sm bg-slate-50 focus:bg-white">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Password</label>
-                    <input type="password" id="loginPass" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-600">
+                    <input type="password" id="loginPass" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none text-sm bg-slate-50 focus:bg-white">
                 </div>
-                <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition text-sm">
-                    Ingia <i class="fa-solid fa-arrow-right-to-bracket ml-2"></i>
-                </button>
-                <p class="text-center text-xs text-slate-500 mt-2">Huna akaunti? <a href="#" onclick="showAuth('register')" class="text-blue-600 font-bold hover:underline">Jisajili hapa</a></p>
+                <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition text-sm">Ingia</button>
             </form>
 
-            <!-- REGISTER FORM -->
             <form id="userRegisterForm" onsubmit="handleUserRegister(event)" class="space-y-4 hidden">
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Jina Kamili</label>
-                    <input type="text" id="regFullName" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none text-sm bg-slate-50 focus:bg-white">
+                    <input type="text" id="regFullName" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none text-sm bg-slate-50">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Username</label>
-                    <input type="text" id="regUser" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none text-sm bg-slate-50 focus:bg-white">
+                    <input type="text" id="regUser" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none text-sm bg-slate-50">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Password</label>
-                    <input type="password" id="regPass" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none text-sm bg-slate-50 focus:bg-white">
+                    <input type="password" id="regPass" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none text-sm bg-slate-50">
                 </div>
-                <button type="submit" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-xl shadow-lg transition text-sm">
-                    Tengeneza Akaunti
-                </button>
-                <p class="text-center text-xs text-slate-500 mt-2">Unayo akaunti? <a href="#" onclick="showAuth('login')" class="text-blue-600 font-bold hover:underline">Ingia hapa</a></p>
+                <button type="submit" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-xl shadow-lg transition text-sm">Tengeneza Akaunti</button>
             </form>
         </div>
     </div>
 
-    <!-- 3. ADMIN PANEL MODAL (MODERN DASHBOARD) -->
-    <div id="adminModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/85 backdrop-blur-lg hidden p-3 md:p-6">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-5xl w-full h-[90vh] flex flex-col border border-slate-200 overflow-hidden relative">
-            
-            <!-- ADMIN HEADER -->
-            <div class="bg-slate-900 text-white p-4 md:p-5 flex justify-between items-center border-b border-slate-800">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-amber-500 text-slate-950 rounded-2xl flex items-center justify-center font-black text-lg shadow-lg">
-                        <i class="fa-solid fa-user-shield"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-extrabold text-base tracking-wide text-white">ADMIN CONTROL PANEL</h3>
-                        <p class="text-[10px] text-slate-400">Usimamizi wa Maombi, Fomu na Uhakiki wa Mikopo</p>
-                    </div>
-                </div>
-                <button onclick="closeAdminModal()" class="w-9 h-9 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 font-bold flex items-center justify-center text-sm transition">✕</button>
-            </div>
-
-            <!-- ADMIN NAVIGATION -->
-            <div class="bg-slate-100 p-2 border-b border-slate-200 flex gap-2 overflow-x-auto">
-                <button onclick="switchAdminTab('pending-loans')" id="adminNav-pending-loans" class="admin-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-white text-slate-700 shadow-sm">
-                    <i class="fa-solid fa-clock-rotate-left text-amber-500"></i> Maombi ya Mikopo
-                </button>
-                <button onclick="switchAdminTab('user-forms')" id="adminNav-user-forms" class="admin-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-slate-200/60 text-slate-600 hover:bg-white">
-                    <i class="fa-solid fa-folder-open text-blue-500"></i> Fomu Zilizopandishwa
-                </button>
-                <button onclick="switchAdminTab('all-loans')" id="adminNav-all-loans" class="admin-tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-slate-200/60 text-slate-600 hover:bg-white">
-                    <i class="fa-solid fa-list-check text-emerald-500"></i> Historia ya Mikopo
-                </button>
-            </div>
-
-            <!-- ADMIN BODY CONTENT -->
-            <div class="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50">
-                
-                <!-- TAB A: MAOMBI YA MIKOPO (APPROVAL / REJECTION) -->
-                <div id="adminTab-pending-loans" class="admin-tab-content space-y-4">
-                    <div class="flex justify-between items-center bg-amber-50 border border-amber-200 p-4 rounded-2xl">
-                        <div>
-                            <h4 class="text-sm font-extrabold text-amber-900">Uhakiki wa Maombi</h4>
-                            <p class="text-xs text-amber-700">Thibitisha au kataa maombi yaliyowasilishwa na watumiaji.</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse text-xs">
-                                <thead>
-                                    <tr class="border-b border-slate-200 bg-slate-100 text-slate-700 font-bold uppercase">
-                                        <th class="p-3">ID Ya Mkopo</th>
-                                        <th class="p-3">Mteja</th>
-                                        <th class="p-3">Kiasi</th>
-                                        <th class="p-3">Jumla ya Kurudisha</th>
-                                        <th class="p-3">Tarehe</th>
-                                        <th class="p-3 text-center">Hatua</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="adminPendingLoansTable" class="divide-y divide-slate-100"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB B: USER FORMS & DOCUMENTS -->
-                <div id="adminTab-user-forms" class="admin-tab-content hidden space-y-4">
-                    <div class="flex justify-between items-center bg-blue-50 border border-blue-200 p-4 rounded-2xl">
-                        <div>
-                            <h4 class="text-sm font-extrabold text-blue-900">Fomu na Nyaraka za Watumiaji</h4>
-                            <p class="text-xs text-blue-700">Kagua fomu zilizo-upload-iwa na kila mteja kwa kina.</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="adminUserFormsGrid"></div>
-                </div>
-
-                <!-- TAB C: HISTORIA YA MIKOPO YOTE -->
-                <div id="adminTab-all-loans" class="admin-tab-content hidden space-y-4">
-                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse text-xs">
-                                <thead>
-                                    <tr class="border-b border-slate-200 bg-slate-100 text-slate-700 font-bold uppercase">
-                                        <th class="p-3">ID</th>
-                                        <th class="p-3">Mteja</th>
-                                        <th class="p-3">Kiasi</th>
-                                        <th class="p-3">Salio</th>
-                                        <th class="p-3">Hali</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="adminAllLoansTable" class="divide-y divide-slate-100"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <!-- 4. MAIN APP LAYOUT -->
+    <!-- MAIN APP LAYOUT -->
     <div id="appLayout" class="hidden min-h-screen flex flex-col bg-slate-100">
-        
-        <!-- TOP APP BAR -->
         <header class="bg-blue-950 text-white p-4 sticky top-0 z-30 shadow-md flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 bg-white rounded-xl p-1 flex items-center justify-center">
                     <img src="jfmicrocreditlogo.png" alt="JF Logo" class="max-w-full max-h-full object-contain">
                 </div>
-                <div>
-                    <h2 class="font-black text-sm tracking-wide leading-tight">JF MICRO-CREDIT</h2>
-                </div>
+                <h2 class="font-black text-sm tracking-wide">JF MICRO-CREDIT</h2>
             </div>
-            <div class="flex items-center gap-3">
-                <div onclick="switchTab('profile')" class="cursor-pointer flex items-center gap-2 bg-blue-900/80 border border-blue-800 px-2.5 py-1 rounded-full">
-                    <img id="topBarAvatar" src="https://via.placeholder.com/150" class="w-6 h-6 rounded-full object-cover border border-emerald-400">
-                    <span id="topBarUser" class="text-xs font-bold text-slate-200 truncate max-w-[80px]">User</span>
-                </div>
+            <div onclick="switchTab('profile')" class="cursor-pointer flex items-center gap-2 bg-blue-900/80 border border-blue-800 px-2.5 py-1 rounded-full">
+                <img id="topBarAvatar" src="https://via.placeholder.com/150" class="w-6 h-6 rounded-full object-cover border border-emerald-400">
+                <span id="topBarUser" class="text-xs font-bold text-slate-200 truncate max-w-[80px]">User</span>
             </div>
         </header>
 
-        <!-- MAIN DASHBOARD CONTENT AREA -->
         <main class="flex-1 max-w-5xl w-full mx-auto p-4 space-y-5">
-            
-            <!-- TAB 1: DASHBOARD OVERVIEW -->
+            <!-- TAB 1: DASHBOARD -->
             <div id="tab-dashboard" class="tab-content space-y-5">
-                <!-- Welcome Banner -->
-                <div class="bg-gradient-to-r from-blue-900 to-blue-800 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
-                    <div class="relative z-10">
-                        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-[10px] uppercase tracking-wider border border-emerald-500/30">
-                            Karibu Tena 👋
-                        </span>
-                        <h1 id="welcomeUserHeading" class="text-2xl font-black mt-2">Habari, Mtumiaji!</h1>
-                        <p class="text-blue-100 text-xs mt-1 max-w-sm">
-                            Tazama muhtasari na takwimu za leo hapa chini.
-                        </p>
-                    </div>
+                <div class="bg-gradient-to-r from-blue-900 to-blue-800 rounded-3xl p-6 text-white shadow-lg">
+                    <h1 id="welcomeUserHeading" class="text-2xl font-black">Habari, Afisa!</h1>
+                    <p class="text-blue-100 text-xs mt-1">Muhtasari wa utendaji wako wa leo.</p>
                 </div>
-
-                <!-- Quick Stats Grid -->
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80">
-                        <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-2"><i class="fa-solid fa-users text-sm"></i></div>
-                        <span class="text-[11px] font-bold text-slate-500 uppercase">Wateja</span>
-                        <h3 class="text-xl font-black text-slate-800 mt-0.5" id="statWateja">0</h3>
-                    </div>
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80">
-                        <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-2"><i class="fa-solid fa-hand-holding-dollar text-sm"></i></div>
-                        <span class="text-[11px] font-bold text-slate-500 uppercase">Zilizotolewa</span>
-                        <h3 class="text-sm font-black text-slate-800 mt-1" id="statDisbursed">TZS 0</h3>
-                    </div>
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80">
-                        <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2"><i class="fa-solid fa-receipt text-sm"></i></div>
-                        <span class="text-[11px] font-bold text-slate-500 uppercase">Marejesho</span>
-                        <h3 class="text-sm font-black text-emerald-600 mt-1" id="statCollected">TZS 0</h3>
-                    </div>
-                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80">
-                        <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-2"><i class="fa-solid fa-clock-rotate-left text-sm"></i></div>
-                        <span class="text-[11px] font-bold text-slate-500 uppercase">Zilizopo Nje</span>
-                        <h3 class="text-sm font-black text-amber-600 mt-1" id="statOutstanding">TZS 0</h3>
-                    </div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200"><span class="text-[11px] font-bold text-slate-500">WATEJA</span><h3 class="text-xl font-black" id="statWateja">0</h3></div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200"><span class="text-[11px] font-bold text-slate-500">ZILIZOTOLEWA</span><h3 class="text-sm font-black" id="statDisbursed">TZS 0</h3></div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200"><span class="text-[11px] font-bold text-slate-500">MAREJESHO</span><h3 class="text-sm font-black text-emerald-600" id="statCollected">TZS 0</h3></div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200"><span class="text-[11px] font-bold text-slate-500">ZILIZOPO NJE</span><h3 class="text-sm font-black text-amber-600" id="statOutstanding">TZS 0</h3></div>
                 </div>
-
-                <!-- Finance Chart -->
-                <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
-                    <h4 class="text-sm font-bold text-slate-800 mb-3">Mwenendo wa Mikopo na Marejesho</h4>
-                    <div class="h-56"><canvas id="financeChart"></canvas></div>
-                </div>
+                <div class="bg-white p-5 rounded-3xl border border-slate-200"><div class="h-56"><canvas id="financeChart"></canvas></div></div>
             </div>
 
-            <!-- TAB 2: SAJILI MTEJA & FORMS -->
+            <!-- TAB 2: SAJILI MTEJA -->
             <div id="tab-wateja" class="tab-content hidden space-y-5">
                 <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
-                    <h3 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-user-plus text-blue-600"></i> Sajili Mteja Mpya
-                    </h3>
+                    <h3 class="text-base font-bold mb-4">Sajili Mteja Mpya</h3>
                     <form id="clientForm" onsubmit="saveClient(event)" class="space-y-3">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Jina Kamili</label>
-                                <input type="text" id="cName" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs outline-none focus:ring-2 focus:ring-blue-600">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Namba ya Simu</label>
-                                <input type="tel" id="cPhone" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs outline-none focus:ring-2 focus:ring-blue-600">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Namba ya NIDA</label>
-                                <input type="text" id="cNida" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs outline-none focus:ring-2 focus:ring-blue-600">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Anwani</label>
-                                <input type="text" id="cAddress" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs outline-none focus:ring-2 focus:ring-blue-600">
-                            </div>
+                            <input type="text" id="cName" placeholder="Jina Kamili" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
+                            <input type="tel" id="cPhone" placeholder="Namba ya Simu" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
+                            <input type="text" id="cNida" placeholder="Namba ya NIDA" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
+                            <input type="text" id="cAddress" placeholder="Anwani" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
                         </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Mdhamini (Guarantor)</label>
-                            <input type="text" id="cGuarantor" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs outline-none focus:ring-2 focus:ring-blue-600">
+                        <input type="text" id="cGuarantor" placeholder="Mdhamini" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
+                        <div class="p-4 bg-slate-50 rounded-2xl border space-y-2">
+                            <label class="block text-xs font-bold">Upload Fomu (Min 4 Pages)</label>
+                            <input type="file" id="cDocuments" multiple accept="image/*" required onchange="validateFiles(this)" class="w-full text-xs">
+                            <span id="fileCountBadge" class="text-[11px] font-bold text-amber-600">Kurasa: 0 / 4 minimum</span>
                         </div>
-
-                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
-                            <label class="block text-xs font-bold text-slate-800">
-                                <i class="fa-solid fa-file-pdf text-blue-600 mr-1"></i> Upload Fomu (Min Pages: 4)
-                            </label>
-                            <input type="file" id="cDocuments" multiple accept="image/*" required onchange="validateFiles(this)" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700">
-                            <span id="fileCountBadge" class="inline-block text-[11px] font-bold text-amber-600">Kurasa: 0 / 4 minimum</span>
-                        </div>
-
-                        <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md text-xs transition">
-                            Hifadhi Mteja na Fomu
-                        </button>
+                        <button type="submit" class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl text-xs">Hifadhi Mteja</button>
                     </form>
                 </div>
-
-                <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
-                    <h3 class="text-sm font-bold text-slate-900 mb-3">Orodha ya Wateja</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold">
-                                    <th class="p-2.5">ID</th>
-                                    <th class="p-2.5">Jina</th>
-                                    <th class="p-2.5">Simu</th>
-                                    <th class="p-2.5 text-center">Fomu</th>
-                                </tr>
-                            </thead>
-                            <tbody id="clientTableBody" class="divide-y divide-slate-100"></tbody>
-                        </table>
-                    </div>
+                <div class="bg-white p-5 rounded-3xl border border-slate-200">
+                    <h3 class="text-sm font-bold mb-3">Orodha ya Wateja</h3>
+                    <table class="w-full text-left text-xs"><tbody id="clientTableBody" class="divide-y"></tbody></table>
                 </div>
             </div>
 
             <!-- TAB 3: MIKOPO -->
             <div id="tab-mikopo" class="tab-content hidden space-y-5">
                 <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
-                    <h3 class="text-base font-bold text-slate-900 mb-4"><i class="fa-solid fa-file-invoice-dollar text-blue-600 mr-1"></i> Omba Mkopo Mpya</h3>
+                    <h3 class="text-base font-bold mb-4">Omba Mkopo Mpya</h3>
                     <form id="loanForm" onsubmit="submitLoan(event)" class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Chagua Mteja</label>
-                            <select id="lClientSelect" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs outline-none bg-white"></select>
-                        </div>
+                        <select id="lClientSelect" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs bg-white"></select>
                         <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Kiasi (TZS)</label>
-                                <input type="number" id="lAmount" required min="10000" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Riba (%)</label>
-                                <input type="number" id="lInterest" value="10" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs outline-none">
-                            </div>
+                            <input type="number" id="lAmount" placeholder="Kiasi (TZS)" required min="10000" class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
+                            <input type="number" id="lInterest" value="10" placeholder="Riba (%)" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
                         </div>
-                        <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md text-xs transition">Wasilisha Ombi</button>
+                        <button type="submit" class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl text-xs">Wasilisha Ombi</button>
                     </form>
                 </div>
-
-                <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
-                    <h3 class="text-sm font-bold text-slate-900 mb-3">Orodha ya Mikopo</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold">
-                                    <th class="p-2.5">Mteja</th>
-                                    <th class="p-2.5">Kiasi</th>
-                                    <th class="p-2.5">Salio</th>
-                                    <th class="p-2.5">Hali</th>
-                                </tr>
-                            </thead>
-                            <tbody id="loanTableBody" class="divide-y divide-slate-100"></tbody>
-                        </table>
-                    </div>
+                <div class="bg-white p-5 rounded-3xl border border-slate-200">
+                    <table class="w-full text-left text-xs"><tbody id="loanTableBody" class="divide-y"></tbody></table>
                 </div>
             </div>
 
             <!-- TAB 4: MAREJESHO -->
             <div id="tab-marejesho" class="tab-content hidden space-y-5">
                 <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
-                    <h3 class="text-base font-bold text-slate-900 mb-4"><i class="fa-solid fa-receipt text-emerald-600 mr-1"></i> Rekodi Rejesho Kipya</h3>
+                    <h3 class="text-base font-bold mb-4">Rekodi Rejesho Kipya</h3>
                     <form id="repayForm" onsubmit="submitRepayment(event)" class="space-y-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Chagua Mkopo</label>
-                            <select id="rLoanSelect" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs outline-none bg-white"></select>
-                        </div>
+                        <select id="rLoanSelect" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs bg-white"></select>
                         <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Kiasi (TZS)</label>
-                                <input type="number" id="rAmount" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-600 mb-1">Namba ya Risiti</label>
-                                <input type="text" id="rRef" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs outline-none">
-                            </div>
+                            <input type="number" id="rAmount" placeholder="Kiasi (TZS)" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
+                            <input type="text" id="rRef" placeholder="Namba ya Risiti" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
                         </div>
-                        <button type="submit" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-xl shadow-md text-xs transition">Hifadhi Rejesho</button>
+                        <button type="submit" class="w-full py-3 bg-emerald-500 text-slate-950 font-extrabold rounded-xl text-xs">Hifadhi Rejesho</button>
                     </form>
                 </div>
-
-                <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
-                    <h3 class="text-sm font-bold text-slate-900 mb-3">Historia ya Marejesho</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold">
-                                    <th class="p-2.5">Tarehe</th>
-                                    <th class="p-2.5">Mteja</th>
-                                    <th class="p-2.5">Kiasi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="repayTableBody" class="divide-y divide-slate-100"></tbody>
-                        </table>
-                    </div>
+                <div class="bg-white p-5 rounded-3xl border border-slate-200">
+                    <table class="w-full text-left text-xs"><tbody id="repayTableBody" class="divide-y"></tbody></table>
                 </div>
             </div>
 
-            <!-- TAB 5: USER PROFILE & SETTINGS -->
+            <!-- TAB 5: PROFILE -->
             <div id="tab-profile" class="tab-content hidden space-y-5">
-                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm text-center">
-                    <div class="relative w-24 h-24 mx-auto mb-4">
-                        <img id="profileImagePreview" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full object-cover border-4 border-blue-600 shadow-md">
-                        <label for="profileImageInput" class="absolute bottom-0 right-0 bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center cursor-pointer shadow-lg hover:bg-blue-700">
-                            <i class="fa-solid fa-camera text-xs"></i>
-                        </label>
-                        <input type="file" id="profileImageInput" accept="image/*" class="hidden" onchange="uploadProfilePicture(this)">
-                    </div>
-                    
-                    <h3 id="profileFullName" class="text-lg font-bold text-slate-900">User Name</h3>
-                    <span id="profileRoleBadge" class="inline-block px-3 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold uppercase mt-1">USER</span>
-
-                    <div class="mt-6 pt-6 border-t border-slate-100 max-w-sm mx-auto text-left space-y-3">
-                        <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-500 font-semibold">Username:</span>
-                            <span id="profileUsername" class="font-bold text-slate-800">user</span>
-                        </div>
-                        <div class="flex justify-between items-center text-xs">
-                            <span class="text-slate-500 font-semibold">Hali ya Akaunti:</span>
-                            <span class="text-emerald-600 font-bold">Active</span>
-                        </div>
-                    </div>
-
-                    <button onclick="logout()" class="w-full max-w-sm mx-auto mt-6 py-3 bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold rounded-xl transition border border-rose-200 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-right-from-bracket"></i> Ondoka (Logout)
-                    </button>
-                </div>
-
-                <!-- ADMIN APPROVALS SECTION (Visible inside app if logged as admin) -->
-                <div id="adminApprovalSection" class="admin-only bg-white p-5 rounded-3xl border border-slate-200 shadow-sm hidden">
-                    <h3 class="text-sm font-bold text-slate-900 mb-3 text-amber-600"><i class="fa-solid fa-shield-halved mr-1"></i> Uhakiki wa Mikopo (Admin Only)</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold">
-                                    <th class="p-2.5">Mteja</th>
-                                    <th class="p-2.5">Kiasi</th>
-                                    <th class="p-2.5 text-center">Hatua</th>
-                                </tr>
-                            </thead>
-                            <tbody id="approvalTableBody" class="divide-y divide-slate-100"></tbody>
-                        </table>
-                    </div>
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 text-center">
+                    <img id="profileImagePreview" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-blue-600">
+                    <h3 id="profileFullName" class="text-lg font-bold">User Name</h3>
+                    <span id="profileRoleBadge" class="px-3 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold">AFISA</span>
+                    <button onclick="logout()" class="w-full max-w-sm mx-auto mt-6 py-3 bg-rose-50 text-rose-600 text-xs font-bold rounded-xl border border-rose-200">Ondoka (Logout)</button>
                 </div>
             </div>
-
         </main>
 
-        <!-- 5. BOTTOM NAVIGATION BAR (MOBILE & DESKTOP SUITED) -->
-        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-3 py-2 z-40 shadow-lg">
-            <div class="max-w-md mx-auto flex justify-around items-center">
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-1 text-[10px] font-semibold text-slate-400 hover:text-blue-600 transition">
-                    <i class="fa-solid fa-chart-pie text-lg"></i>
-                    <span>Home</span>
-                </button>
-                <button onclick="switchTab('wateja')" id="nav-wateja" class="flex flex-col items-center gap-1 text-[10px] font-semibold text-slate-400 hover:text-blue-600 transition">
-                    <i class="fa-solid fa-user-plus text-lg"></i>
-                    <span>Sajili</span>
-                </button>
-                <button onclick="switchTab('mikopo')" id="nav-mikopo" class="flex flex-col items-center gap-1 text-[10px] font-semibold text-slate-400 hover:text-blue-600 transition">
-                    <i class="fa-solid fa-hand-holding-dollar text-lg"></i>
-                    <span>Mikopo</span>
-                </button>
-                <button onclick="switchTab('marejesho')" id="nav-marejesho" class="flex flex-col items-center gap-1 text-[10px] font-semibold text-slate-400 hover:text-blue-600 transition">
-                    <i class="fa-solid fa-receipt text-lg"></i>
-                    <span>Marejesho</span>
-                </button>
-                <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center gap-1 text-[10px] font-semibold text-slate-400 hover:text-blue-600 transition relative">
-                    <i class="fa-solid fa-user text-lg"></i>
-                    <span>Profile</span>
-                    <span id="pendingBadge" class="hidden absolute -top-1 right-2 bg-amber-500 text-slate-950 text-[9px] px-1.5 py-0.2 rounded-full font-black">0</span>
-                </button>
+        <!-- NAVIGATION BAR YA AFISA -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t px-3 py-2 z-40">
+            <div class="max-w-md mx-auto flex justify-around items-center text-slate-400">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center text-[10px] font-semibold"><i class="fa-solid fa-chart-pie text-lg"></i><span>Home</span></button>
+                <button onclick="switchTab('wateja')" id="nav-wateja" class="flex flex-col items-center text-[10px] font-semibold"><i class="fa-solid fa-user-plus text-lg"></i><span>Sajili</span></button>
+                <button onclick="switchTab('mikopo')" id="nav-mikopo" class="flex flex-col items-center text-[10px] font-semibold"><i class="fa-solid fa-hand-holding-dollar text-lg"></i><span>Mikopo</span></button>
+                <button onclick="switchTab('marejesho')" id="nav-marejesho" class="flex flex-col items-center text-[10px] font-semibold"><i class="fa-solid fa-receipt text-lg"></i><span>Marejesho</span></button>
+                <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center text-[10px] font-semibold"><i class="fa-solid fa-user text-lg"></i><span>Profile</span></button>
             </div>
         </nav>
     </div>
 
-    <!-- MODAL FOR VIEWING DOCUMENTS -->
-    <div id="docModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden p-4">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-5 border border-slate-100 max-h-[85vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-3 border-b pb-2">
-                <h3 class="text-sm font-bold text-slate-900" id="modalClientTitle">Fomu za Mteja</h3>
-                <button onclick="closeDocModal()" class="w-7 h-7 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold flex items-center justify-center text-xs">✕</button>
-            </div>
-            <div id="modalDocGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
-        </div>
-    </div>
-
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        let currentUser = null;
-        let selectedFilesBase64 = [];
-
-        let registeredUsers = JSON.parse(localStorage.getItem('jf_registered_users')) || [];
-        let clients = JSON.parse(localStorage.getItem('jf_clients')) || [];
-        let loans = JSON.parse(localStorage.getItem('jf_loans')) || [];
-        let repayments = JSON.parse(localStorage.getItem('jf_repayments')) || [];
-        let chartInstance = null;
-
-        const defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-
-        function saveData() {
-            localStorage.setItem('jf_registered_users', JSON.stringify(registeredUsers));
-            localStorage.setItem('jf_clients', JSON.stringify(clients));
-            localStorage.setItem('jf_loans', JSON.stringify(loans));
-            localStorage.setItem('jf_repayments', JSON.stringify(repayments));
-        }
-
-        /* ADMIN MODAL LOGIC */
-        function openAdminModal() {
-            document.getElementById('adminModal').classList.remove('hidden');
-            renderAdminPanel();
-        }
-
-        function closeAdminModal() {
-            document.getElementById('adminModal').classList.add('hidden');
-        }
-
-        function switchAdminTab(tab) {
-            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
-                btn.classList.remove('bg-white', 'text-slate-700', 'shadow-sm');
-                btn.classList.add('bg-slate-200/60', 'text-slate-600');
-            });
-
-            document.getElementById(`adminTab-${tab}`).classList.remove('hidden');
-            const activeNav = document.getElementById(`adminNav-${tab}`);
-            if (activeNav) {
-                activeNav.classList.remove('bg-slate-200/60', 'text-slate-600');
-                activeNav.classList.add('bg-white', 'text-slate-700', 'shadow-sm');
-            }
-        }
-
-        function renderAdminPanel() {
-            const pendingLoans = loans.filter(l => l.status === 'PENDING');
-            
-            // Pending Loans Table
-            const pendingTable = document.getElementById('adminPendingLoansTable');
-            if(pendingLoans.length === 0) {
-                pendingTable.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400 italic">Hakuna maombi mapya ya mikopo kwa sasa.</td></tr>`;
-            } else {
-                pendingTable.innerHTML = pendingLoans.map(l => `
-                    <tr class="hover:bg-slate-50">
-                        <td class="p-3 font-bold text-slate-800">${l.id}</td>
-                        <td class="p-3 font-semibold text-slate-700">${l.clientName}</td>
-                        <td class="p-3 font-bold text-blue-600">TZS ${l.amount.toLocaleString()}</td>
-                        <td class="p-3 font-bold text-slate-800">TZS ${l.totalPayable.toLocaleString()}</td>
-                        <td class="p-3 text-slate-500">${l.date}</td>
-                        <td class="p-3 flex justify-center gap-1.5">
-                            <button onclick="approveLoan('${l.id}')" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black rounded-lg text-[11px] shadow transition">Kukubali</button>
-                            <button onclick="rejectLoan('${l.id}')" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-lg text-[11px] shadow transition">Kukataa</button>
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            // User Forms Grid
-            const formsGrid = document.getElementById('adminUserFormsGrid');
-            if (clients.length === 0) {
-                formsGrid.innerHTML = `<p class="text-xs text-slate-400 italic col-span-2 text-center py-6">Hakuna fomu za wateja zilizopandishwa bado.</p>`;
-            } else {
-                formsGrid.innerHTML = clients.map(c => `
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-2">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h5 class="font-extrabold text-slate-800 text-xs">${c.name}</h5>
-                                <span class="text-[10px] text-slate-400">ID: ${c.id} | Simu: ${c.phone}</span>
-                            </div>
-                            <span class="px-2 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold rounded-lg border border-blue-100">
-                                Kurasa ${c.documents ? c.documents.length : 0}
-                            </span>
-                        </div>
-                        <button onclick="viewDocs('${c.id}')" class="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-eye"></i> Tazama Fomu Zote
-                        </button>
-                    </div>
-                `).join('');
-            }
-
-            // All Loans
-            document.getElementById('adminAllLoansTable').innerHTML = loans.map(l => `
-                <tr class="hover:bg-slate-50">
-                    <td class="p-3 font-bold text-slate-800">${l.id}</td>
-                    <td class="p-3 font-semibold text-slate-700">${l.clientName}</td>
-                    <td class="p-3">TZS ${l.amount.toLocaleString()}</td>
-                    <td class="p-3 font-bold text-amber-600">TZS ${l.balance.toLocaleString()}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${l.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' : (l.status === 'REJECTED' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800')}">${l.status}</span></td>
-                </tr>
-            `).join('');
-        }
-
-        function showAuth(type) {
-            document.getElementById('authModal').classList.remove('hidden');
-            document.getElementById('userLoginForm').classList.add('hidden');
-            document.getElementById('userRegisterForm').classList.add('hidden');
-
-            if (type === 'login') {
-                document.getElementById('authTitle').innerText = 'Ingia';
-                document.getElementById('authSubtitle').innerText = 'Weka taarifa zako kuendelea';
-                document.getElementById('userLoginForm').classList.remove('hidden');
-            } else if (type === 'register') {
-                document.getElementById('authTitle').innerText = 'Tengeneza Akaunti';
-                document.getElementById('authSubtitle').innerText = 'Jaza taarifa zako hapa chini';
-                document.getElementById('userRegisterForm').classList.remove('hidden');
-            }
-        }
-
-        function hideAuth() {
-            document.getElementById('authModal').classList.add('hidden');
-        }
-
-        function handleUserRegister(e) {
-            e.preventDefault();
-            const fullname = document.getElementById('regFullName').value;
-            const username = document.getElementById('regUser').value;
-            const password = document.getElementById('regPass').value;
-
-            if (registeredUsers.some(u => u.username === username)) {
-                alert('Username hii tayari ipo!');
-                return;
-            }
-
-            registeredUsers.push({ fullname, username, password, role: 'user', avatar: defaultAvatar });
-            saveData();
-            alert('Akaunti imetengenezwa! Sasa unaweza kuingia.');
-            showAuth('login');
-        }
-
-        function handleUserLogin(e) {
-            e.preventDefault();
-            const username = document.getElementById('loginUser').value;
-            const password = document.getElementById('loginPass').value;
-
-            if(username === 'admin' && password === 'admin123') {
-                currentUser = { fullname: 'Administrator', username: 'admin', role: 'admin', avatar: defaultAvatar };
-            } else {
-                const found = registeredUsers.find(u => u.username === username && u.password === password);
-                if(!found) {
-                    alert('Username au Password sio sahihi!');
-                    return;
-                }
-                currentUser = found;
-            }
-
-            startSession();
-        }
-
-        function startSession() {
-            hideAuth();
-            document.getElementById('homePage').classList.add('hidden');
-            document.getElementById('appLayout').classList.remove('hidden');
-
-            document.getElementById('welcomeUserHeading').innerText = `Habari, ${currentUser.fullname || currentUser.username}!`;
-            document.getElementById('topBarUser').innerText = currentUser.username;
-            document.getElementById('topBarAvatar').src = currentUser.avatar || defaultAvatar;
-
-            document.getElementById('profileFullName').innerText = currentUser.fullname || currentUser.username;
-            document.getElementById('profileUsername').innerText = currentUser.username;
-            document.getElementById('profileRoleBadge').innerText = currentUser.role.toUpperCase();
-            document.getElementById('profileImagePreview').src = currentUser.avatar || defaultAvatar;
-
-            if (currentUser.role === 'admin') {
-                document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
-            } else {
-                document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
-            }
-
-            switchTab('dashboard');
-            renderAll();
-        }
-
-        function uploadProfilePicture(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const photoBase64 = e.target.result;
-                    currentUser.avatar = photoBase64;
-                    document.getElementById('profileImagePreview').src = photoBase64;
-                    document.getElementById('topBarAvatar').src = photoBase64;
-
-                    const idx = registeredUsers.findIndex(u => u.username === currentUser.username);
-                    if (idx !== -1) {
-                        registeredUsers[idx].avatar = photoBase64;
-                        saveData();
-                    }
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function logout() {
-            currentUser = null;
-            document.getElementById('appLayout').classList.add('hidden');
-            document.getElementById('homePage').classList.remove('hidden');
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('nav button').forEach(el => el.classList.remove('bottom-nav-active'));
-
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            const activeNav = document.getElementById(`nav-${tabId}`);
-            if(activeNav) activeNav.classList.add('bottom-nav-active');
-
-            if(tabId === 'dashboard') renderChart();
-        }
-
-        function validateFiles(input) {
-            const files = input.files;
-            const badge = document.getElementById('fileCountBadge');
-            selectedFilesBase64 = [];
-
-            if (files.length < 4) {
-                badge.className = "inline-block text-[11px] font-bold text-rose-600";
-                badge.innerText = `Kurasa: ${files.length} / 4 MINIMUM (Haitakubaliwa!)`;
-                return;
-            }
-
-            badge.className = "inline-block text-[11px] font-bold text-emerald-600";
-            badge.innerText = `Kurasa: ${files.length} / 4 Minimum (Safi!)`;
-
-            Array.from(files).forEach(file => {
-                const reader = new FileReader();
-                reader.onload = function(e) { selectedFilesBase64.push(e.target.result); };
-                reader.readAsDataURL(file);
-            });
-        }
-
-        function saveClient(e) {
-            e.preventDefault();
-            if (selectedFilesBase64.length < 4) {
-                alert('Tafadhali upload angalau kurasa 4 za fomu!');
-                return;
-            }
-
-            const newClient = {
-                id: 'C-' + Math.floor(100 + Math.random() * 900),
-                name: document.getElementById('cName').value,
-                phone: document.getElementById('cPhone').value,
-                nida: document.getElementById('cNida').value,
-                address: document.getElementById('cAddress').value,
-                guarantor: document.getElementById('cGuarantor').value,
-                documents: selectedFilesBase64
-            };
-
-            clients.push(newClient);
-            saveData();
-            document.getElementById('clientForm').reset();
-            document.getElementById('fileCountBadge').innerText = "Kurasa: 0 / 4 minimum";
-            selectedFilesBase64 = [];
-            renderAll();
-            renderAdminPanel();
-            alert('Mteja amesajiliwa kikamilifu!');
-        }
-
-        function viewDocs(clientId) {
-            const client = clients.find(c => c.id === clientId);
-            if (!client || !client.documents) return;
-
-            document.getElementById('modalClientTitle').innerText = `Fomu za Mteja: ${client.name}`;
-            const grid = document.getElementById('modalDocGrid');
-            grid.innerHTML = client.documents.map((doc, idx) => `
-                <div class="border rounded-xl p-2 bg-slate-50 space-y-1">
-                    <span class="text-[10px] font-bold text-slate-500">Ukurasa ${idx + 1}</span>
-                    <img src="${doc}" class="w-full h-auto rounded-lg border">
-                </div>
-            `).join('');
-
-            document.getElementById('docModal').classList.remove('hidden');
-        }
-
-        function closeDocModal() {
-            document.getElementById('docModal').classList.add('hidden');
-        }
-
-        function submitLoan(e) {
-            e.preventDefault();
-            const clientId = document.getElementById('lClientSelect').value;
-            const client = clients.find(c => c.id === clientId);
-            const amount = parseFloat(document.getElementById('lAmount').value);
-            const interest = parseFloat(document.getElementById('lInterest').value);
-            const totalPayable = amount + (amount * (interest / 100));
-
-            loans.push({
-                id: 'L-' + Math.floor(1000 + Math.random() * 9000),
-                clientId: clientId,
-                clientName: client ? client.name : 'Unknown',
-                amount: amount,
-                totalPayable: totalPayable,
-                balance: totalPayable,
-                status: 'PENDING',
-                date: new Date().toISOString().split('T')[0]
-            });
-
-            saveData();
-            document.getElementById('loanForm').reset();
-            renderAll();
-            renderAdminPanel();
-            alert('Ombi la mkopo limewasilishwa!');
-        }
-
-        function submitRepayment(e) {
-            e.preventDefault();
-            const loanId = document.getElementById('rLoanSelect').value;
-            const amount = parseFloat(document.getElementById('rAmount').value);
-            const ref = document.getElementById('rRef').value;
-
-            const loan = loans.find(l => l.id === loanId);
-            if (!loan) return;
-
-            loan.balance -= amount;
-            if (loan.balance <= 0) {
-                loan.balance = 0;
-                loan.status = 'COMPLETED';
-            }
-
-            repayments.push({
-                id: 'R-' + (repayments.length + 1),
-                clientName: loan.clientName,
-                amount: amount,
-                ref: ref,
-                date: new Date().toISOString().split('T')[0]
-            });
-
-            saveData();
-            document.getElementById('repayForm').reset();
-            renderAll();
-            renderAdminPanel();
-            alert('Rejesho limerekodiwa!');
-        }
-
-        function approveLoan(loanId) {
-            const loan = loans.find(l => l.id === loanId);
-            if (loan) {
-                loan.status = 'APPROVED';
-                saveData();
-                renderAll();
-                renderAdminPanel();
-            }
-        }
-
-        function rejectLoan(loanId) {
-            const loan = loans.find(l => l.id === loanId);
-            if (loan) {
-                loan.status = 'REJECTED';
-                saveData();
-                renderAll();
-                renderAdminPanel();
-            }
-        }
-
-        function renderAll() {
-            document.getElementById('statWateja').innerText = clients.length;
-            const approved = loans.filter(l => l.status === 'APPROVED' || l.status === 'COMPLETED');
-            document.getElementById('statDisbursed').innerText = 'TZS ' + approved.reduce((s, l) => s + l.amount, 0).toLocaleString();
-            document.getElementById('statCollected').innerText = 'TZS ' + repayments.reduce((s, r) => s + r.amount, 0).toLocaleString();
-            document.getElementById('statOutstanding').innerText = 'TZS ' + approved.reduce((s, l) => s + l.balance, 0).toLocaleString();
-
-            const pending = loans.filter(l => l.status === 'PENDING');
-            const badge = document.getElementById('pendingBadge');
-            if(pending.length > 0 && currentUser && currentUser.role === 'admin') {
-                badge.innerText = pending.length;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-
-            document.getElementById('clientTableBody').innerHTML = clients.map(c => `
-                <tr class="hover:bg-slate-50">
-                    <td class="p-2.5 font-bold">${c.id}</td>
-                    <td class="p-2.5 font-semibold">${c.name}</td>
-                    <td class="p-2.5">${c.phone}</td>
-                    <td class="p-2.5 text-center">
-                        <button onclick="viewDocs('${c.id}')" class="px-2 py-1 bg-blue-50 text-blue-700 font-bold rounded-lg border border-blue-200 text-[10px]">Fomu (${c.documents ? c.documents.length : 0})</button>
-                    </td>
-                </tr>
-            `).join('');
-
-            document.getElementById('lClientSelect').innerHTML = clients.map(c => `<option value="${c.id}">${c.name} (${c.id})</option>`).join('');
-
-            document.getElementById('loanTableBody').innerHTML = loans.map(l => `
-                <tr class="hover:bg-slate-50">
-                    <td class="p-2.5 font-bold">${l.clientName}</td>
-                    <td class="p-2.5">TZS ${l.amount.toLocaleString()}</td>
-                    <td class="p-2.5 font-bold text-amber-600">TZS ${l.balance.toLocaleString()}</td>
-                    <td class="p-2.5"><span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${l.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${l.status}</span></td>
-                </tr>
-            `).join('');
-
-            document.getElementById('rLoanSelect').innerHTML = loans.filter(l => l.status === 'APPROVED').map(l => `<option value="${l.id}">${l.clientName} (TZS ${l.balance.toLocaleString()})</option>`).join('');
-
-            document.getElementById('repayTableBody').innerHTML = repayments.map(r => `
-                <tr class="hover:bg-slate-50">
-                    <td class="p-2.5 text-slate-500">${r.date}</td>
-                    <td class="p-2.5 font-bold">${r.clientName}</td>
-                    <td class="p-2.5 font-bold text-emerald-600">TZS ${r.amount.toLocaleString()}</td>
-                </tr>
-            `).join('');
-
-            document.getElementById('approvalTableBody').innerHTML = pending.map(l => `
-                <tr class="hover:bg-slate-50">
-                    <td class="p-2.5 font-bold">${l.clientName}</td>
-                    <td class="p-2.5 font-bold text-blue-600">TZS ${l.amount.toLocaleString()}</td>
-                    <td class="p-2.5 flex justify-center gap-1">
-                        <button onclick="approveLoan('${l.id}')" class="px-2 py-1 bg-emerald-500 text-slate-950 font-bold rounded text-[10px]">Kukubali</button>
-                        <button onclick="rejectLoan('${l.id}')" class="px-2 py-1 bg-rose-600 text-white font-bold rounded text-[10px]">Kukataa</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function renderChart() {
-            const ctx = document.getElementById('financeChart').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
-            const approved = loans.filter(l => l.status === 'APPROVED' || l.status === 'COMPLETED');
-            chartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Mikopo', 'Marejesho', 'Nje'],
-                    datasets: [{
-                        data: [
-                            approved.reduce((s, l) => s + l.amount, 0),
-                            repayments.reduce((s, r) => s + r.amount, 0),
-                            approved.reduce((s, l) => s + l.balance, 0)
-                        ],
-                        backgroundColor: ['#2563eb', '#10b981', '#f59e0b'],
-                        borderRadius: 6
-                    }]
-                },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
-        }
-    </script>
+    <!-- SCRIPT ENGINE -->
+    <script src="app.js"></script>
 </body>
 </html>
