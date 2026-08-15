@@ -141,6 +141,12 @@ function switchAdminTab(tabId) {
     
     const activeNav = document.getElementById(`admin-nav-${tabId}`);
     if(activeNav) activeNav.classList.add('bottom-nav-active');
+
+    if (tabId === 'forms') {
+        renderAdminLoansTable();
+    } else if (tabId === 'overview') {
+        renderAdminView();
+    }
 }
 
 /* DATA OPERATIONS */
@@ -203,6 +209,8 @@ function submitLoan(e) {
         id: 'L-' + Math.floor(1000 + Math.random() * 9000),
         clientId: clientId,
         clientName: client ? client.name : 'Unknown',
+        phone: client ? client.phone : '-',
+        officer: currentUser ? currentUser.username : 'Admin',
         amount: amount,
         totalPayable: totalPayable,
         balance: totalPayable,
@@ -315,6 +323,77 @@ function renderAll() {
     `).join('');
 }
 
+function renderAdminLoansTable() {
+    const adminLoansTable = document.getElementById('adminLoansTable');
+    if (!adminLoansTable) return;
+
+    if (loans.length === 0) {
+        adminLoansTable.innerHTML = `
+            <tr>
+                <td colspan="7" class="p-4 text-center text-slate-500 italic">
+                    Hakuna taarifa za mikopo zilizopatikana.
+                </td>
+            </tr>`;
+        return;
+    }
+
+    adminLoansTable.innerHTML = loans.map(loan => {
+        const client = clients.find(c => c.id === loan.clientId || c.name === loan.clientName);
+        const phone = loan.phone || (client ? client.phone : '-');
+        const officer = loan.officer || 'Admin';
+
+        return `
+            <tr class="hover:bg-slate-800/40 border-b border-slate-700/50">
+                <td class="p-2 font-mono text-amber-400 font-bold">${loan.id || 'N/A'}</td>
+                <td class="p-2 font-bold text-white">${loan.clientName || 'Mteja'}</td>
+                <td class="p-2 text-slate-300">${phone}</td>
+                <td class="p-2 font-bold text-amber-400">TZS ${Number(loan.amount || 0).toLocaleString()}</td>
+                <td class="p-2 text-slate-400">${officer}</td>
+                <td class="p-2">
+                    <span class="px-2 py-0.5 text-[10px] font-bold rounded-full ${
+                        loan.status === 'APPROVED' || loan.status === 'Approved' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 
+                        loan.status === 'REJECTED' || loan.status === 'Rejected' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 
+                        'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                    }">
+                        ${loan.status || 'PENDING'}
+                    </span>
+                </td>
+                <td class="p-2 text-right">
+                    <button onclick="viewClientDocs('${loan.clientId || loan.id}')" class="px-2.5 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-lg text-[11px] font-bold hover:bg-amber-500 hover:text-slate-950 transition">
+                        <i class="fa-solid fa-file-lines mr-1"></i> View Form
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function viewClientDocs(identifier) {
+    // Tafuta mteja kupitia Client ID au Loan ID
+    let client = clients.find(c => c.id === identifier);
+    if (!client) {
+        const loan = loans.find(l => l.id === identifier);
+        if (loan) {
+            client = clients.find(c => c.id === loan.clientId || c.name === loan.clientName);
+        }
+    }
+
+    if (!client || !client.documents || client.documents.length === 0) {
+        alert('Hakuna fomu/nyaraka zilizopatikana kwa mteja huyu.');
+        return;
+    }
+
+    document.getElementById('modalClientTitle').innerText = `Fomu za Mteja: ${client.name}`;
+    document.getElementById('modalDocGrid').innerHTML = client.documents.map((doc, idx) => `
+        <div class="border border-slate-700 rounded-xl p-2 bg-slate-950 space-y-1">
+            <span class="text-[10px] font-bold text-slate-400">Ukurasa ${idx + 1}</span>
+            <img src="${doc}" class="w-full h-auto rounded-lg">
+        </div>
+    `).join('');
+
+    document.getElementById('docModal').classList.remove('hidden');
+}
+
 function renderAdminView() {
     const approved = loans.filter(l => l.status === 'APPROVED' || l.status === 'COMPLETED');
     const totalDisbursed = approved.reduce((s, l) => s + l.amount, 0);
@@ -365,31 +444,12 @@ function renderAdminView() {
         </tr>
     `).join('');
 
-    // User Forms
-    document.getElementById('adminUserFormsGrid').innerHTML = clients.map(c => `
-        <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700 flex justify-between items-center">
-            <div>
-                <h5 class="font-bold text-white text-xs">${c.name}</h5>
-                <p class="text-[10px] text-slate-400">NIDA: ${c.nida} | Simu: ${c.phone}</p>
-            </div>
-            <button onclick="viewDocs('${c.id}')" class="px-3 py-1.5 bg-amber-500 text-slate-950 font-bold text-xs rounded-xl">Fomu (${c.documents ? c.documents.length : 0})</button>
-        </div>
-    `).join('');
+    // Render loans table
+    renderAdminLoansTable();
 }
 
 function viewDocs(clientId) {
-    const client = clients.find(c => c.id === clientId);
-    if (!client || !client.documents) return;
-
-    document.getElementById('modalClientTitle').innerText = `Fomu za Mteja: ${client.name}`;
-    document.getElementById('modalDocGrid').innerHTML = client.documents.map((doc, idx) => `
-        <div class="border border-slate-700 rounded-xl p-2 bg-slate-950 space-y-1">
-            <span class="text-[10px] font-bold text-slate-400">Ukurasa ${idx + 1}</span>
-            <img src="${doc}" class="w-full h-auto rounded-lg">
-        </div>
-    `).join('');
-
-    document.getElementById('docModal').classList.remove('hidden');
+    viewClientDocs(clientId);
 }
 
 function closeDocModal() {
