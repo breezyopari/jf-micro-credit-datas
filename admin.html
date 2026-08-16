@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JF MICRO-CREDIT | Admin Control Panel</title>
+    <title>JF MICRO-CREDIT | Control Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -15,9 +15,9 @@
 </head>
 <body class="bg-slate-900 text-slate-100 antialiased min-h-screen pb-20 md:pb-0">
 
-    <!-- LOGIN SCREEN FOR ADMIN -->
+    <!-- LOGIN SCREEN FOR ADMIN & USER -->
     <div id="adminAuthLayout" class="min-h-screen flex items-center justify-center p-4 bg-slate-950">
-        <div class="bg-slate-900 rounded-3xl border border-slate-800 p-8 max-w-md w-full shadow-2xl">
+        <div class="bg-slate-900 rounded-3xl border border-slate-800 p-6 md:p-8 max-w-md w-full shadow-2xl">
             <div class="text-center mb-6">
                 <div class="w-16 h-16 bg-amber-500/10 text-amber-500 rounded-2xl mx-auto flex items-center justify-center text-2xl border border-amber-500/20 mb-3">
                     <i class="fa-solid fa-shield-halved"></i>
@@ -32,7 +32,12 @@
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-400 mb-1">PASSWORD</label>
-                    <input type="password" id="adminPass" required class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-500 text-sm">
+                    <div class="relative">
+                        <input type="password" id="adminPass" required class="w-full pl-4 pr-10 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-500 text-sm">
+                        <button type="button" onclick="togglePasswordVisibility('adminPass', 'adminPassEye')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+                            <i id="adminPassEye" class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
                 <button type="submit" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl text-sm transition">Ingia Admin Panel</button>
             </form>
@@ -52,7 +57,7 @@
                     <span class="text-[9px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold uppercase">Owner / Audit</span>
                 </div>
             </div>
-            <button onclick="adminLogout()" class="px-3 py-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs font-bold rounded-lg">Logout</button>
+            <button onclick="adminLogout()" class="px-3 py-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs font-bold rounded-lg hover:bg-rose-500 hover:text-white transition">Logout</button>
         </header>
 
         <!-- MAIN DASHBOARD CONTENT -->
@@ -79,7 +84,7 @@
                 </div>
 
                 <div class="bg-slate-800/40 p-4 rounded-2xl border border-slate-700/80">
-                    <h4 class="text-xs font-bold text-slate-300 mb-3"><i class="fa-solid fa-[#f59e0b] fa-list-check mr-2"></i> SYSTEM LOGS & AUDIT TRAIL</h4>
+                    <h4 class="text-xs font-bold text-slate-300 mb-3"><i class="fa-solid fa-list-check text-amber-500 mr-2"></i> SYSTEM LOGS & AUDIT TRAIL</h4>
                     <div class="space-y-2 overflow-y-auto max-h-60" id="adminAuditLogs"></div>
                 </div>
             </div>
@@ -122,7 +127,7 @@
                         <!-- SEARCH BAR -->
                         <div class="relative w-full md:w-64">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                            <input type="text" id="adminSearchInput" onkeyup="filterAdminLoans()" placeholder="Tafta Mteja..." class="w-full pl-9 pr-4 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500">
+                            <input type="text" id="adminSearchInput" onkeyup="filterAdminLoans()" placeholder="Tafuta Mteja / Afisa..." class="w-full pl-9 pr-4 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500">
                         </div>
                     </div>
 
@@ -147,7 +152,7 @@
             </div>
         </main>
 
-        <!-- NAVIGATION BAR YA ADMIN (BOTTOM NAV) -->
+        <!-- NAVIGATION BAR YA ADMIN (BOTTOM NAV FOR MOBILE) -->
         <nav class="fixed bottom-0 left-0 right-0 bg-slate-950 border-t border-slate-800 px-3 py-2 z-40">
             <div class="max-w-md mx-auto flex justify-around items-center text-slate-500">
                 <button onclick="switchAdminTab('overview')" id="admin-nav-overview" class="flex flex-col items-center text-[10px] font-semibold bottom-nav-active">
@@ -171,13 +176,19 @@
         <div class="bg-slate-900 rounded-3xl border border-slate-700 p-5 max-w-2xl w-full max-h-[85vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-3 border-b border-slate-800 pb-2">
                 <h3 class="text-xs font-bold text-white" id="modalClientTitle">Fomu za Mteja</h3>
-                <button onclick="closeDocModal()" class="text-slate-400 font-bold">✕</button>
+                <button onclick="closeDocModal()" class="text-slate-400 font-bold hover:text-white">✕</button>
             </div>
             <div id="modalDocGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
         </div>
     </div>
 
+    <!-- FIREBASE JS SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- MAIN APP SCRIPT -->
     <script src="app.js"></script>
+    
     <script>
         // Check local login status on boot for Admin page
         window.addEventListener('DOMContentLoaded', () => {
@@ -187,6 +198,21 @@
                 renderAdminView();
             }
         });
+
+        // Toggle Password Visibility
+        function togglePasswordVisibility(inputId, eyeIconId) {
+            const input = document.getElementById(inputId);
+            const eyeIcon = document.getElementById(eyeIconId);
+            if (input.type === "password") {
+                input.type = "text";
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
+            }
+        }
 
         // Function ya kuchuja mteja kwenye search bar ya admin
         function filterAdminLoans() {
