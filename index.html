@@ -2,219 +2,219 @@
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JF MICRO-CREDIT | Portal ya Afisa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JF MICRO-CREDIT DATAS | Portal ya Afisa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .bottom-nav-active { color: #f59e0b; font-weight: 700; }
-        .bottom-nav-active i { transform: translateY(-2px); color: #f59e0b; }
-        html { -webkit-overflow-scrolling: touch; }
-        input, select, button { font-size: 16px !important; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .bottom-nav-active { color: #2563eb; font-weight: 700; }
+        .bottom-nav-active i { transform: translateY(-2px); color: #2563eb; }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 antialiased min-h-screen pb-20 md:pb-0 select-none">
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen pb-20 md:pb-0">
 
-    <!-- OFFICER AUTH SCREEN -->
-    <div id="userAuthLayout" class="min-h-screen flex items-center justify-center p-4 bg-slate-950">
-        <div class="bg-slate-900 rounded-3xl border border-slate-800 p-6 md:p-8 max-w-md w-full shadow-2xl relative">
-            
-            <div class="flex justify-between items-center mb-6">
-                <div class="flex items-center gap-2">
-                    <div class="w-10 h-10 bg-amber-500/10 text-amber-500 rounded-xl flex items-center justify-center text-xl border border-amber-500/20">
-                        <i class="fa-solid fa-user-tie"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-base font-extrabold text-white">JF MICRO-CREDIT</h1>
-                        <p class="text-[10px] text-slate-400">Portal ya Afisa wa Mikopo</p>
-                    </div>
+    <!-- LANDING / HOME PAGE -->
+    <div id="homePage" class="relative min-h-screen flex flex-col justify-between bg-gradient-to-b from-blue-950 via-blue-900 to-slate-900 text-white">
+        <header class="max-w-7xl mx-auto w-full p-6 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white rounded-2xl p-1.5 shadow-lg flex items-center justify-center">
+                    <img src="jfmicrocreditlogo.png" alt="JF Logo" class="max-w-full max-h-full object-contain">
                 </div>
-                <a href="admin.html" class="text-[11px] font-bold text-amber-500 hover:underline border border-amber-500/30 px-2.5 py-1 rounded-lg bg-amber-500/10">
-                    Admin Panel <i class="fa-solid fa-arrow-right ml-1"></i>
-                </a>
+                <div>
+                    <h1 class="font-extrabold text-base tracking-wide text-white">JF MICRO-CREDIT</h1>
+                    <span class="text-[9px] bg-emerald-500 text-slate-950 px-2 py-0.5 rounded-full font-black uppercase tracking-wider">Afisa Portal</span>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="showAuth('login')" class="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold rounded-xl text-xs transition">Ingia</button>
+                <button onclick="showAuth('register')" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-xl text-xs shadow-lg transition">Jisajili</button>
+            </div>
+        </header>
+
+        <main class="max-w-2xl mx-auto px-6 text-center my-auto py-12">
+            <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-3xl mx-auto mb-6 p-4 border border-white/20 flex items-center justify-center shadow-2xl">
+                <i class="fa-solid fa-wallet text-4xl text-emerald-400"></i>
+            </div>
+            <h2 class="text-3xl md:text-5xl font-black text-white leading-tight mb-4">
+                Karibu Portal ya Maafisa
+            </h2>
+            <p class="text-slate-300 text-sm md:text-base max-w-md mx-auto mb-8 leading-relaxed font-normal">
+                Mfumo wa usimamizi wa mikopo, usajili wa wateja na marejesho kwa Maafisa wa JF Micro-Credit.
+            </p>
+            <div class="flex justify-center gap-3 max-w-sm mx-auto">
+                <button onclick="showAuth('login')" class="px-6 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-2xl text-sm shadow-xl shadow-emerald-500/20 transition flex items-center justify-center gap-2">
+                    Ingia Portal <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </main>
+
+        <footer class="w-full border-t border-slate-800/80 bg-slate-950/80 backdrop-blur-md py-4 px-6 text-center flex justify-between items-center max-w-7xl mx-auto">
+            <p class="text-[11px] text-slate-400">&copy; 2026 JF Micro-Credit. Haki zote zimehifadhiwa.</p>
+            <a href="admin.html" class="text-xs text-amber-400 font-bold hover:underline flex items-center gap-1">
+                <i class="fa-solid fa-user-shield"></i> Nenda Admin Panel
+            </a>
+        </footer>
+    </div>
+
+    <!-- AUTHENTICATION MODAL -->
+    <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden p-4">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 border border-slate-100 relative">
+            <button onclick="hideAuth()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 font-bold text-base">✕</button>
+            <div class="text-center mb-6">
+                <h3 id="authTitle" class="text-xl font-extrabold text-blue-950">Ingia Afisa</h3>
+                <p id="authSubtitle" class="text-slate-500 text-xs mt-1">Ingiza taarifa zako za Afisa kuendelea</p>
             </div>
 
-            <!-- LOGIN FORM FOR OFFICER -->
-            <form id="officerLoginForm" onsubmit="handleOfficerLogin(event)" class="space-y-4">
-                <h3 class="text-xs font-extrabold text-slate-300 uppercase tracking-wider mb-2">Ingia Kwenye Akaunti ya Afisa</h3>
+            <form id="userLoginForm" onsubmit="handleUserLogin(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">USERNAME (Jina la Afisa)</label>
-                    <input type="text" id="officerUser" required class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-500">
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Username</label>
+                    <input type="text" id="loginUser" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none text-sm bg-slate-50 focus:bg-white">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">PASSWORD (Nenosiri)</label>
-                    <div class="relative">
-                        <input type="password" id="officerPass" required class="w-full pl-4 pr-10 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-500">
-                        <button type="button" onclick="togglePassword('officerPass', 'officerEye')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-2">
-                            <i id="officerEye" class="fa-solid fa-eye"></i>
-                        </button>
-                    </div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Password</label>
+                    <input type="password" id="loginPass" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none text-sm bg-slate-50 focus:bg-white">
                 </div>
-                <button type="submit" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-black rounded-xl text-sm transition shadow-lg shadow-amber-500/20">
-                    <i class="fa-solid fa-right-to-bracket mr-2"></i> Ingia Mfomoni
-                </button>
+                <button type="submit" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition text-sm">Ingia</button>
             </form>
 
+            <form id="userRegisterForm" onsubmit="handleUserRegister(event)" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Jina Kamili</label>
+                    <input type="text" id="regFullName" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none text-sm bg-slate-50">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Username</label>
+                    <input type="text" id="regUser" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none text-sm bg-slate-50">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Password</label>
+                    <input type="password" id="regPass" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none text-sm bg-slate-50">
+                </div>
+                <button type="submit" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold rounded-xl shadow-lg transition text-sm">Tengeneza Akaunti</button>
+            </form>
         </div>
     </div>
 
-    <!-- MAIN OFFICER SYSTEM LAYOUT -->
-    <div id="userMainLayout" class="hidden min-h-screen flex flex-col">
-        <!-- TOP HEADER -->
-        <header class="bg-slate-950 border-b border-slate-800 p-4 sticky top-0 z-30 flex justify-between items-center">
+    <!-- MAIN APP LAYOUT -->
+    <div id="appLayout" class="hidden min-h-screen flex flex-col bg-slate-100">
+        <header class="bg-blue-950 text-white p-4 sticky top-0 z-30 shadow-md flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-amber-500 text-slate-950 rounded-xl flex items-center justify-center font-extrabold">
-                    <i class="fa-solid fa-user-tie"></i>
+                <div class="w-9 h-9 bg-white rounded-xl p-1 flex items-center justify-center">
+                    <img src="jfmicrocreditlogo.png" alt="JF Logo" class="max-w-full max-h-full object-contain">
                 </div>
-                <div>
-                    <h2 class="font-extrabold text-sm text-white" id="displayOfficerName">AFISA WA MIKOPO</h2>
-                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold uppercase">Online / Active</span>
-                </div>
+                <h2 class="font-black text-sm tracking-wide">JF MICRO-CREDIT</h2>
             </div>
-            <button onclick="officerLogout()" class="px-3 py-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs font-bold rounded-lg hover:bg-rose-500 hover:text-white transition">
-                Toka (Logout)
-            </button>
+            <div onclick="switchTab('profile')" class="cursor-pointer flex items-center gap-2 bg-blue-900/80 border border-blue-800 px-2.5 py-1 rounded-full">
+                <img id="topBarAvatar" src="https://via.placeholder.com/150" class="w-6 h-6 rounded-full object-cover border border-emerald-400">
+                <span id="topBarUser" class="text-xs font-bold text-slate-200 truncate max-w-[80px]">User</span>
+            </div>
         </header>
 
-        <!-- MAIN CONTENT AREA -->
-        <main class="flex-1 max-w-3xl w-full mx-auto p-4 space-y-5">
+        <main class="flex-1 max-w-5xl w-full mx-auto p-4 space-y-5">
+            <!-- TAB 1: DASHBOARD -->
+            <div id="tab-dashboard" class="tab-content space-y-5">
+                <div class="bg-gradient-to-r from-blue-900 to-blue-800 rounded-3xl p-6 text-white shadow-lg">
+                    <h1 id="welcomeUserHeading" class="text-2xl font-black">Habari, Afisa!</h1>
+                    <p class="text-blue-100 text-xs mt-1">Muhtasari wa utendaji wako wa leo.</p>
+                </div>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200"><span class="text-[11px] font-bold text-slate-500">WATEJA</span><h3 class="text-xl font-black" id="statWateja">0</h3></div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200"><span class="text-[11px] font-bold text-slate-500">ZILIZOTOLEWA</span><h3 class="text-sm font-black" id="statDisbursed">TZS 0</h3></div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200"><span class="text-[11px] font-bold text-slate-500">MAREJESHO</span><h3 class="text-sm font-black text-emerald-600" id="statCollected">TZS 0</h3></div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200"><span class="text-[11px] font-bold text-slate-500">ZILIZOPO NJE</span><h3 class="text-sm font-black text-amber-600" id="statOutstanding">TZS 0</h3></div>
+                </div>
+                <div class="bg-white p-5 rounded-3xl border border-slate-200"><div class="h-56"><canvas id="financeChart"></canvas></div></div>
+            </div>
 
-            <!-- TAB 1: OMBA MKOPO (LOAN APPLICATION) -->
-            <div id="tab-apply" class="officer-tab-content space-y-4">
-                <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/80 space-y-4">
-                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-2">
-                        <h3 class="text-sm font-extrabold text-amber-400 uppercase tracking-wide">
-                            <i class="fa-solid fa-file-signature mr-2"></i> Sajili Mteja & Omba Mkopo
-                        </h3>
-                    </div>
-
-                    <form onsubmit="handleLoanApplication(event)" class="space-y-3">
+            <!-- TAB 2: SAJILI MTEJA -->
+            <div id="tab-wateja" class="tab-content hidden space-y-5">
+                <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+                    <h3 class="text-base font-bold mb-4">Sajili Mteja Mpya</h3>
+                    <form id="clientForm" onsubmit="saveClient(event)" class="space-y-3">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-400 mb-1">JINA KAMILI LA MTEJA</label>
-                                <input type="text" id="clientName" required class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs outline-none focus:border-amber-500" placeholder="mf. John Doe">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-400 mb-1">NAMBA YA SIMU YA MTEJA</label>
-                                <input type="tel" id="clientPhone" required class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs outline-none focus:border-amber-500" placeholder="07XXXXXXXX">
-                            </div>
+                            <input type="text" id="cName" placeholder="Jina Kamili" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
+                            <input type="tel" id="cPhone" placeholder="Namba ya Simu" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
+                            <input type="text" id="cNida" placeholder="Namba ya NIDA" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
+                            <input type="text" id="cAddress" placeholder="Anwani" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
                         </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-400 mb-1">KIASI CHA MKOPO (TZS)</label>
-                                <input type="number" id="loanAmount" required class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs outline-none focus:border-amber-500" placeholder="50000">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-400 mb-1">MUDA WA MKOPO (SIKU)</label>
-                                <select id="loanDuration" class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs outline-none focus:border-amber-500">
-                                    <option value="14">Siku 14</option>
-                                    <option value="30">Siku 30 (Mwezi 1)</option>
-                                    <option value="60">Siku 60 (Miezi 2)</option>
-                                </select>
-                            </div>
+                        <input type="text" id="cGuarantor" placeholder="Mdhamini" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
+                        <div class="p-4 bg-slate-50 rounded-2xl border space-y-2">
+                            <label class="block text-xs font-bold">Upload Fomu (Min 4 Pages)</label>
+                            <input type="file" id="cDocuments" multiple accept="image/*" required onchange="validateFiles(this)" class="w-full text-xs">
+                            <span id="fileCountBadge" class="text-[11px] font-bold text-amber-600">Kurasa: 0 / 4 minimum</span>
                         </div>
-
-                        <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-black rounded-xl text-xs transition">
-                            Wasilisha Maombi ya Mkopo
-                        </button>
+                        <button type="submit" class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl text-xs">Hifadhi Mteja</button>
                     </form>
                 </div>
-            </div>
-
-            <!-- TAB 2: MAREJESHO (REPAYMENTS & SEARCH) -->
-            <div id="tab-repayments" class="officer-tab-content hidden space-y-4">
-                <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/80 space-y-4">
-                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-3">
-                        <h3 class="text-sm font-extrabold text-amber-400 uppercase tracking-wide">
-                            <i class="fa-solid fa-hand-holding-dollar mr-2"></i> Marejesho ya Mikopo
-                        </h3>
-
-                        <!-- SEARCH BAR YA KUTAFUTA MTEJA ALIYESAJILIWA NA AFISA -->
-                        <div class="relative w-full md:w-64">
-                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                            <input type="text" id="repaymentSearchInput" onkeyup="filterRepaymentClients()" placeholder="Tafuta mteja (Jina/Simu)..." class="w-full pl-9 pr-4 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500">
-                        </div>
-                    </div>
-
-                    <!-- ORODHA YA MTEJA WA MAREJESHO -->
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="border-b border-slate-700 text-slate-400">
-                                <tr>
-                                    <th class="p-2">Mteja</th>
-                                    <th class="p-2">Simu</th>
-                                    <th class="p-2">Kiasi Mkopo</th>
-                                    <th class="p-2 text-right">Hatua</th>
-                                </tr>
-                            </thead>
-                            <tbody id="repaymentClientsTable" class="divide-y divide-slate-700/50">
-                                <!-- Data zitaingizwa kupitia app.js -->
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="bg-white p-5 rounded-3xl border border-slate-200">
+                    <h3 class="text-sm font-bold mb-3">Orodha ya Wateja</h3>
+                    <table class="w-full text-left text-xs"><tbody id="clientTableBody" class="divide-y"></tbody></table>
                 </div>
             </div>
 
+            <!-- TAB 3: MIKOPO -->
+            <div id="tab-mikopo" class="tab-content hidden space-y-5">
+                <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+                    <h3 class="text-base font-bold mb-4">Omba Mkopo Mpya</h3>
+                    <form id="loanForm" onsubmit="submitLoan(event)" class="space-y-3">
+                        <select id="lClientSelect" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs bg-white"></select>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="number" id="lAmount" placeholder="Kiasi (TZS)" required min="10000" class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
+                            <input type="number" id="lInterest" value="10" placeholder="Riba (%)" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl text-xs">Wasilisha Ombi</button>
+                    </form>
+                </div>
+                <div class="bg-white p-5 rounded-3xl border border-slate-200">
+                    <table class="w-full text-left text-xs"><tbody id="loanTableBody" class="divide-y"></tbody></table>
+                </div>
+            </div>
+
+            <!-- TAB 4: MAREJESHO -->
+            <div id="tab-marejesho" class="tab-content hidden space-y-5">
+                <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+                    <h3 class="text-base font-bold mb-4">Rekodi Rejesho Kipya</h3>
+                    <form id="repayForm" onsubmit="submitRepayment(event)" class="space-y-3">
+                        <select id="rLoanSelect" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs bg-white"></select>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="number" id="rAmount" placeholder="Kiasi (TZS)" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
+                            <input type="text" id="rRef" placeholder="Namba ya Risiti" required class="w-full px-3.5 py-2.5 rounded-xl border text-xs">
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-emerald-500 text-slate-950 font-extrabold rounded-xl text-xs">Hifadhi Rejesho</button>
+                    </form>
+                </div>
+                <div class="bg-white p-5 rounded-3xl border border-slate-200">
+                    <table class="w-full text-left text-xs"><tbody id="repayTableBody" class="divide-y"></tbody></table>
+                </div>
+            </div>
+
+            <!-- TAB 5: PROFILE -->
+            <div id="tab-profile" class="tab-content hidden space-y-5">
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 text-center">
+                    <img id="profileImagePreview" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-blue-600">
+                    <h3 id="profileFullName" class="text-lg font-bold">User Name</h3>
+                    <span id="profileRoleBadge" class="px-3 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold">AFISA</span>
+                    <button onclick="logout()" class="w-full max-w-sm mx-auto mt-6 py-3 bg-rose-50 text-rose-600 text-xs font-bold rounded-xl border border-rose-200">Ondoka (Logout)</button>
+                </div>
+            </div>
         </main>
 
-        <!-- BOTTOM NAVIGATION BAR FOR MOBILE (ANDROID & iOS) -->
-        <nav class="fixed bottom-0 left-0 right-0 bg-slate-950 border-t border-slate-800 px-4 py-2 z-40">
-            <div class="max-w-md mx-auto flex justify-around items-center text-slate-500">
-                <button onclick="switchOfficerTab('apply')" id="off-nav-apply" class="flex flex-col items-center text-[10px] font-semibold bottom-nav-active py-1">
-                    <i class="fa-solid fa-file-pen text-lg mb-0.5"></i><span>Omba Mkopo</span>
-                </button>
-                <button onclick="switchOfficerTab('repayments')" id="off-nav-repayments" class="flex flex-col items-center text-[10px] font-semibold py-1">
-                    <i class="fa-solid fa-money-bill-transfer text-lg mb-0.5"></i><span>Marejesho</span>
-                </button>
+        <!-- NAVIGATION BAR YA AFISA -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t px-3 py-2 z-40">
+            <div class="max-w-md mx-auto flex justify-around items-center text-slate-400">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center text-[10px] font-semibold"><i class="fa-solid fa-chart-pie text-lg"></i><span>Home</span></button>
+                <button onclick="switchTab('wateja')" id="nav-wateja" class="flex flex-col items-center text-[10px] font-semibold"><i class="fa-solid fa-user-plus text-lg"></i><span>Sajili</span></button>
+                <button onclick="switchTab('mikopo')" id="nav-mikopo" class="flex flex-col items-center text-[10px] font-semibold"><i class="fa-solid fa-hand-holding-dollar text-lg"></i><span>Mikopo</span></button>
+                <button onclick="switchTab('marejesho')" id="nav-marejesho" class="flex flex-col items-center text-[10px] font-semibold"><i class="fa-solid fa-receipt text-lg"></i><span>Marejesho</span></button>
+                <button onclick="switchTab('profile')" id="nav-profile" class="flex flex-col items-center text-[10px] font-semibold"><i class="fa-solid fa-user text-lg"></i><span>Profile</span></button>
             </div>
         </nav>
     </div>
 
-    <!-- FIREBASE JS SDK (v8) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <!-- APP SCRIPT -->
+    <!-- SCRIPT ENGINE -->
     <script src="app.js"></script>
-    <script>
-        // Angalia kama Afisa ameingia
-        window.addEventListener('DOMContentLoaded', () => {
-            const activeUser = sessionStorage.getItem('jf_officer_user');
-            if (activeUser) {
-                document.getElementById('userAuthLayout').classList.add('hidden');
-                document.getElementById('userMainLayout').classList.remove('hidden');
-                document.getElementById('displayOfficerName').innerText = "AFISA: " + activeUser.toUpperCase();
-                loadRepaymentData();
-            }
-        });
-
-        // Show/Hide Password
-        function togglePassword(inputId, eyeId) {
-            const input = document.getElementById(inputId);
-            const eye = document.getElementById(eyeId);
-            if (input.type === 'password') {
-                input.type = 'text';
-                eye.classList.remove('fa-eye');
-                eye.classList.add('fa-eye-slash');
-            } else {
-                input.type = 'password';
-                eye.classList.remove('fa-eye-slash');
-                eye.classList.add('fa-eye');
-            }
-        }
-
-        // Search Filter ya Marejesho
-        function filterRepaymentClients() {
-            const query = document.getElementById('repaymentSearchInput').value.toLowerCase();
-            const rows = document.querySelectorAll('#repaymentClientsTable tr');
-            rows.forEach(row => {
-                const text = row.innerText.toLowerCase();
-                row.style.display = text.includes(query) ? '' : 'none';
-            });
-        }
-    </script>
 </body>
 </html>
