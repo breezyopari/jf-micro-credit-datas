@@ -1,23 +1,56 @@
-/* UTENDAJI NA MAWASILIANO YA MFUMO WOTE (SHARED LOGIC) */
+/* FIREBASE CONFIGURATION & INITIALIZATION */
+const firebaseConfig = {
+  apiKey: "AIzaSyAJaNc_Ah5KDEAzch4VvqRoY4pqcGIBvaA",
+  authDomain: "jf-micro-credit-datas.firebaseapp.com",
+  projectId: "jf-micro-credit-datas",
+  storageBucket: "jf-micro-credit-datas.firebasestorage.app",
+  messagingSenderId: "755353254789",
+  appId: "1:755353254789:web:250d36fb89df00c532a2ec",
+  measurementId: "G-8H452QVR50"
+};
 
-let registeredUsers = JSON.parse(localStorage.getItem('jf_registered_users')) || [];
-let clients = JSON.parse(localStorage.getItem('jf_clients')) || [];
-let loans = JSON.parse(localStorage.getItem('jf_loans')) || [];
-let repayments = JSON.parse(localStorage.getItem('jf_repayments')) || [];
-let systemLogs = JSON.parse(localStorage.getItem('jf_system_logs')) || [];
+// Anzisha Firebase na Firestore
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+/* UTENDAJI NA MAWASILIANO YA MFUMO WOTE */
+let registeredUsers = [];
+let clients = [];
+let loans = [];
+let repayments = [];
+let systemLogs = [];
 
 let currentUser = null;
 let selectedFilesBase64 = [];
 let chartInstance = null;
 const defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
-function saveData() {
-    localStorage.setItem('jf_registered_users', JSON.stringify(registeredUsers));
-    localStorage.setItem('jf_clients', JSON.stringify(clients));
-    localStorage.setItem('jf_loans', JSON.stringify(loans));
-    localStorage.setItem('jf_repayments', JSON.stringify(repayments));
-    localStorage.setItem('jf_system_logs', JSON.stringify(systemLogs));
+// Sikiliza mabadiliko ya data kutoka Firestore (Real-time Sync)
+function listenToFirestore() {
+    db.collection('users').onSnapshot(snapshot => {
+        registeredUsers = snapshot.docs.map(doc => doc.data());
+        renderAll();
+    });
+    db.collection('clients').onSnapshot(snapshot => {
+        clients = snapshot.docs.map(doc => doc.data());
+        renderAll();
+    });
+    db.collection('loans').onSnapshot(snapshot => {
+        loans = snapshot.docs.map(doc => doc.data());
+        renderAll();
+    });
+    db.collection('repayments').onSnapshot(snapshot => {
+        repayments = snapshot.docs.map(doc => doc.data());
+        renderAll();
+    });
+    db.collection('logs').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+        systemLogs = snapshot.docs.map(doc => doc.data());
+        if (sessionStorage.getItem('jf_admin_active') === 'true') {
+            renderAdminView();
+        }
+    });
 }
+listenToFirestore();
 
 function addLog(action, user) {
     const log = {
@@ -26,8 +59,7 @@ function addLog(action, user) {
         action: action,
         timestamp: new Date().toLocaleString()
     };
-    systemLogs.unshift(log);
-    saveData();
+    db.collection('logs').doc(log.id).set(log);
 }
 
 /* AUTHENTICATION CONTROL */
@@ -41,7 +73,7 @@ function hideAuth() {
     document.getElementById('authModal').classList.add('hidden');
 }
 
-function handleUserRegister(e) {
+async function handleUserRegister(e) {
     e.preventDefault();
     const fullname = document.getElementById('regFullName').value;
     const username = document.getElementById('regUser').value;
@@ -52,9 +84,9 @@ function handleUserRegister(e) {
         return;
     }
 
-    registeredUsers.push({ fullname, username, password, role: 'user', avatar: defaultAvatar });
+    const newUser = { fullname, username, password, role: 'user', avatar: defaultAvatar };
+    await db.collection('users').doc(username).set(newUser);
     addLog(`Afisa mpya amejisajili: ${username}`, username);
-    saveData();
     alert('Akaunti imetengenezwa! Subiri au ingia.');
     showAuth('login');
 }
@@ -171,7 +203,7 @@ function validateFiles(input) {
     });
 }
 
-function saveClient(e) {
+async function saveClient(e) {
     e.preventDefault();
     if (selectedFilesBase64.length < 4) {
         alert('Tafadhali upload angalau kurasa 4 za fomu!');
@@ -188,16 +220,14 @@ function saveClient(e) {
         documents: selectedFilesBase64
     };
 
-    clients.push(newClient);
+    await db.collection('clients').doc(newClient.id).set(newClient);
     addLog(`Mteja mpya amesajiliwa: ${newClient.name} (${newClient.id})`);
-    saveData();
     document.getElementById('clientForm').reset();
     selectedFilesBase64 = [];
-    renderAll();
     alert('Mteja amesajiliwa kikamilifu!');
 }
 
-function submitLoan(e) {
+async function submitLoan(e) {
     e.preventDefault();
     const clientId = document.getElementById('lClientSelect').value;
     const client = clients.find(c => c.id === clientId);
@@ -218,15 +248,13 @@ function submitLoan(e) {
         date: new Date().toISOString().split('T')[0]
     };
 
-    loans.push(newLoan);
+    await db.collection('loans').doc(newLoan.id).set(newLoan);
     addLog(`Ombi jipya la mkopo limewasilishwa: ${newLoan.id} - TZS ${amount}`);
-    saveData();
     document.getElementById('loanForm').reset();
-    renderAll();
     alert('Ombi la mkopo limewasilishwa! Subiri Approval ya Admin.');
 }
 
-function submitRepayment(e) {
+async function submitRepayment(e) {
     e.preventDefault();
     const loanId = document.getElementById('rLoanSelect').value;
     const amount = parseFloat(document.getElementById('rAmount').value);
@@ -235,54 +263,45 @@ function submitRepayment(e) {
     const loan = loans.find(l => l.id === loanId);
     if (!loan) return;
 
-    loan.balance -= amount;
-    if (loan.balance <= 0) {
-        loan.balance = 0;
-        loan.status = 'COMPLETED';
+    let newBalance = loan.balance - amount;
+    let newStatus = loan.status;
+    if (newBalance <= 0) {
+        newBalance = 0;
+        newStatus = 'COMPLETED';
     }
 
-    repayments.push({
+    await db.collection('loans').doc(loan.id).update({ balance: newBalance, status: newStatus });
+
+    const newRepayment = {
         id: 'R-' + (repayments.length + 1),
+        loanId: loan.id,
         clientName: loan.clientName,
         amount: amount,
         ref: ref,
         date: new Date().toISOString().split('T')[0]
-    });
+    };
 
+    await db.collection('repayments').doc(newRepayment.id).set(newRepayment);
     addLog(`Rejesho limerekodiwa: TZS ${amount} kwa Mkopo ${loan.id}`);
-    saveData();
     document.getElementById('repayForm').reset();
-    renderAll();
     alert('Rejesho limerekodiwa kikamilifu!');
 }
 
 /* ADMIN ACTIONS */
-function approveLoan(loanId) {
-    const loan = loans.find(l => l.id === loanId);
-    if (loan) {
-        loan.status = 'APPROVED';
-        addLog(`Mkopo ${loan.id} WAMETHIBITISHWA na Admin`, 'admin');
-        saveData();
-        renderAdminView();
-    }
+async function approveLoan(loanId) {
+    await db.collection('loans').doc(loanId).update({ status: 'APPROVED' });
+    addLog(`Mkopo ${loanId} WAMETHIBITISHWA na Admin`, 'admin');
 }
 
-function rejectLoan(loanId) {
-    const loan = loans.find(l => l.id === loanId);
-    if (loan) {
-        loan.status = 'REJECTED';
-        addLog(`Mkopo ${loan.id} UMEKATALOWA na Admin`, 'admin');
-        saveData();
-        renderAdminView();
-    }
+async function rejectLoan(loanId) {
+    await db.collection('loans').doc(loanId).update({ status: 'REJECTED' });
+    addLog(`Mkopo ${loanId} UMEKATALOWA na Admin`, 'admin');
 }
 
-function removeOfficer(username) {
+async function removeOfficer(username) {
     if (confirm(`Unahakika unataka kumuondoa afisa ${username}?`)) {
-        registeredUsers = registeredUsers.filter(u => u.username !== username);
+        await db.collection('users').doc(username).delete();
         addLog(`Afisa ${username} ameondolewa kwenye mfumo`, 'admin');
-        saveData();
-        renderAdminView();
     }
 }
 
@@ -321,6 +340,8 @@ function renderAll() {
             <td class="p-2 text-emerald-600 font-bold">TZS ${r.amount.toLocaleString()}</td>
         </tr>
     `).join('');
+
+    renderChart();
 }
 
 function renderAdminLoansTable() {
@@ -369,7 +390,6 @@ function renderAdminLoansTable() {
 }
 
 function viewClientDocs(identifier) {
-    // Tafuta mteja kupitia Client ID au Loan ID
     let client = clients.find(c => c.id === identifier);
     if (!client) {
         const loan = loans.find(l => l.id === identifier);
@@ -405,7 +425,6 @@ function renderAdminView() {
     document.getElementById('admProf').innerText = 'TZS ' + totalProfit.toLocaleString();
     document.getElementById('admCol').innerText = 'TZS ' + totalCollected.toLocaleString();
 
-    // Audit logs
     document.getElementById('adminAuditLogs').innerHTML = systemLogs.map(log => `
         <div class="p-2 bg-slate-900 border border-slate-700/60 rounded-xl text-[11px] flex justify-between items-center">
             <div>
@@ -416,7 +435,6 @@ function renderAdminView() {
         </div>
     `).join('');
 
-    // Pending Loans Approval
     const pending = loans.filter(l => l.status === 'PENDING');
     document.getElementById('adminApprovalTable').innerHTML = pending.length === 0 ? 
         `<tr><td colspan="4" class="p-3 text-center text-slate-500">Hakuna maombi ya mikopo yanayosubiri.</td></tr>` :
@@ -432,7 +450,6 @@ function renderAdminView() {
             </tr>
         `).join('');
 
-    // Officers List
     document.getElementById('adminOfficersTable').innerHTML = registeredUsers.map(u => `
         <tr>
             <td class="p-2 text-white font-semibold">${u.fullname || u.username}</td>
@@ -444,7 +461,6 @@ function renderAdminView() {
         </tr>
     `).join('');
 
-    // Render loans table
     renderAdminLoansTable();
 }
 
