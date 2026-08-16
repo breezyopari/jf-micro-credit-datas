@@ -9,11 +9,11 @@ const firebaseConfig = {
   measurementId: "G-8H452QVR50"
 };
 
-// Anzisha Firebase na Firestore
+// Anzisha Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-/* UTENDAJI NA MAWASILIANO YA MFUMO WOTE */
+/* UTENDAJI NA DATA VARIABLES */
 let registeredUsers = [];
 let clients = [];
 let loans = [];
@@ -25,7 +25,7 @@ let selectedFilesBase64 = [];
 let chartInstance = null;
 const defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
-// Sikiliza mabadiliko ya data kutoka Firestore (Real-time Sync)
+/* REAL-TIME LISTENERS KUTOKA FIREBASE */
 function listenToFirestore() {
     db.collection('users').onSnapshot(snapshot => {
         registeredUsers = snapshot.docs.map(doc => doc.data());
@@ -64,13 +64,19 @@ function addLog(action, user) {
 
 /* AUTHENTICATION CONTROL */
 function showAuth(type) {
-    document.getElementById('authModal').classList.remove('hidden');
-    document.getElementById('userLoginForm').classList.toggle('hidden', type !== 'login');
-    document.getElementById('userRegisterForm').classList.toggle('hidden', type !== 'register');
+    const modal = document.getElementById('authModal');
+    if (modal) modal.classList.remove('hidden');
+    
+    const loginForm = document.getElementById('userLoginForm');
+    if (loginForm) loginForm.classList.toggle('hidden', type !== 'login');
+    
+    const regForm = document.getElementById('userRegisterForm');
+    if (regForm) regForm.classList.toggle('hidden', type !== 'register');
 }
 
 function hideAuth() {
-    document.getElementById('authModal').classList.add('hidden');
+    const modal = document.getElementById('authModal');
+    if (modal) modal.classList.add('hidden');
 }
 
 async function handleUserRegister(e) {
@@ -84,14 +90,23 @@ async function handleUserRegister(e) {
         return;
     }
 
-    const newUser = { fullname, username, password, role: 'user', avatar: defaultAvatar };
+    const newUser = { 
+        fullname, 
+        username, 
+        password, 
+        role: 'user', 
+        avatar: defaultAvatar,
+        registeredAt: new Date().toISOString()
+    };
+
+    // Hifadhi Taarifa za User mpya kwenye Firebase Firestore
     await db.collection('users').doc(username).set(newUser);
     addLog(`Afisa mpya amejisajili: ${username}`, username);
-    alert('Akaunti imetengenezwa! Subiri au ingia.');
+    alert('Akaunti imetengenezwa kikamilifu! Unaweza kuingia sasa.');
     showAuth('login');
 }
 
-function handleUserLogin(e) {
+async function handleUserLogin(e) {
     e.preventDefault();
     const username = document.getElementById('loginUser').value;
     const password = document.getElementById('loginPass').value;
@@ -102,6 +117,13 @@ function handleUserLogin(e) {
         return;
     }
     currentUser = found;
+
+    // Rekodi Login Sessions kwenye Firebase Logs
+    await db.collection('user_sessions').add({
+        username: currentUser.username,
+        loginTime: new Date().toISOString()
+    });
+
     addLog(`Afisa ameingia kwenye mfumo`, currentUser.username);
     startSession();
 }
@@ -129,16 +151,15 @@ function adminLogout() {
 
 function startSession() {
     hideAuth();
-    document.getElementById('homePage').classList.add('hidden');
-    document.getElementById('appLayout').classList.remove('hidden');
+    const home = document.getElementById('homePage');
+    if (home) home.classList.add('hidden');
+    
+    const layout = document.getElementById('appLayout');
+    if (layout) layout.classList.remove('hidden');
 
-    document.getElementById('welcomeUserHeading').innerText = `Habari, ${currentUser.fullname || currentUser.username}!`;
-    document.getElementById('topBarUser').innerText = currentUser.username;
-    document.getElementById('topBarAvatar').src = currentUser.avatar || defaultAvatar;
-
-    document.getElementById('profileFullName').innerText = currentUser.fullname || currentUser.username;
-    document.getElementById('profileRoleBadge').innerText = currentUser.role.toUpperCase();
-    document.getElementById('profileImagePreview').src = currentUser.avatar || defaultAvatar;
+    if(document.getElementById('welcomeUserHeading')) document.getElementById('welcomeUserHeading').innerText = `Habari, ${currentUser.fullname || currentUser.username}!`;
+    if(document.getElementById('topBarUser')) document.getElementById('topBarUser').innerText = currentUser.username;
+    if(document.getElementById('topBarAvatar')) document.getElementById('topBarAvatar').src = currentUser.avatar || defaultAvatar;
 
     switchTab('dashboard');
     renderAll();
@@ -146,8 +167,11 @@ function startSession() {
 
 function logout() {
     currentUser = null;
-    document.getElementById('appLayout').classList.add('hidden');
-    document.getElementById('homePage').classList.remove('hidden');
+    const layout = document.getElementById('appLayout');
+    if (layout) layout.classList.add('hidden');
+    
+    const home = document.getElementById('homePage');
+    if (home) home.classList.remove('hidden');
 }
 
 /* NAVIGATION ENGINE */
@@ -188,13 +212,17 @@ function validateFiles(input) {
     selectedFilesBase64 = [];
 
     if (files.length < 4) {
-        badge.className = "text-[11px] font-bold text-rose-600";
-        badge.innerText = `Kurasa: ${files.length} / 4 MINIMUM (Inahitajika 4+)`;
+        if(badge) {
+            badge.className = "text-[11px] font-bold text-rose-600";
+            badge.innerText = `Kurasa: ${files.length} / 4 MINIMUM (Inahitajika 4+)`;
+        }
         return;
     }
 
-    badge.className = "text-[11px] font-bold text-emerald-600";
-    badge.innerText = `Kurasa: ${files.length} / 4 OK!`;
+    if(badge) {
+        badge.className = "text-[11px] font-bold text-emerald-600";
+        badge.innerText = `Kurasa: ${files.length} / 4 OK!`;
+    }
 
     Array.from(files).forEach(file => {
         const reader = new FileReader();
@@ -217,6 +245,7 @@ async function saveClient(e) {
         nida: document.getElementById('cNida').value,
         address: document.getElementById('cAddress').value,
         guarantor: document.getElementById('cGuarantor').value,
+        officer: currentUser ? currentUser.username : 'Admin',
         documents: selectedFilesBase64
     };
 
@@ -287,6 +316,21 @@ async function submitRepayment(e) {
     alert('Rejesho limerekodiwa kikamilifu!');
 }
 
+/* SEARCH & FILTER LOGIC KWA AFISA */
+function filterClientOptions(searchInputId, selectElementId, type) {
+    const query = document.getElementById(searchInputId).value.toLowerCase();
+    const select = document.getElementById(selectElementId);
+    
+    if (type === 'clients') {
+        const filtered = clients.filter(c => c.name.toLowerCase().includes(query) || c.id.toLowerCase().includes(query) || c.phone.includes(query));
+        select.innerHTML = filtered.map(c => `<option value="${c.id}">${c.name} (${c.id}) - ${c.phone}</option>`).join('');
+    } else if (type === 'loans') {
+        const approvedLoans = loans.filter(l => l.status === 'APPROVED');
+        const filtered = approvedLoans.filter(l => l.clientName.toLowerCase().includes(query) || l.id.toLowerCase().includes(query));
+        select.innerHTML = filtered.map(l => `<option value="${l.id}">${l.clientName} (Deni: TZS ${l.balance.toLocaleString()})</option>`).join('');
+    }
+}
+
 /* ADMIN ACTIONS */
 async function approveLoan(loanId) {
     await db.collection('loans').doc(loanId).update({ status: 'APPROVED' });
@@ -309,37 +353,47 @@ async function removeOfficer(username) {
 function renderAll() {
     const approved = loans.filter(l => l.status === 'APPROVED' || l.status === 'COMPLETED');
     
-    document.getElementById('statWateja').innerText = clients.length;
-    document.getElementById('statDisbursed').innerText = 'TZS ' + approved.reduce((s, l) => s + l.amount, 0).toLocaleString();
-    document.getElementById('statCollected').innerText = 'TZS ' + repayments.reduce((s, r) => s + r.amount, 0).toLocaleString();
-    document.getElementById('statOutstanding').innerText = 'TZS ' + approved.reduce((s, l) => s + l.balance, 0).toLocaleString();
+    if(document.getElementById('statWateja')) document.getElementById('statWateja').innerText = clients.length;
+    if(document.getElementById('statDisbursed')) document.getElementById('statDisbursed').innerText = 'TZS ' + approved.reduce((s, l) => s + l.amount, 0).toLocaleString();
+    if(document.getElementById('statCollected')) document.getElementById('statCollected').innerText = 'TZS ' + repayments.reduce((s, r) => s + r.amount, 0).toLocaleString();
+    if(document.getElementById('statOutstanding')) document.getElementById('statOutstanding').innerText = 'TZS ' + approved.reduce((s, l) => s + l.balance, 0).toLocaleString();
 
-    document.getElementById('clientTableBody').innerHTML = clients.map(c => `
-        <tr class="hover:bg-slate-50">
-            <td class="p-2 font-bold">${c.id}</td>
-            <td class="p-2">${c.name}</td>
-            <td class="p-2">${c.phone}</td>
-        </tr>
-    `).join('');
+    if(document.getElementById('clientTableBody')) {
+        document.getElementById('clientTableBody').innerHTML = clients.map(c => `
+            <tr class="hover:bg-slate-50">
+                <td class="p-2 font-bold">${c.id}</td>
+                <td class="p-2">${c.name}</td>
+                <td class="p-2">${c.phone}</td>
+            </tr>
+        `).join('');
+    }
 
-    document.getElementById('lClientSelect').innerHTML = clients.map(c => `<option value="${c.id}">${c.name} (${c.id})</option>`).join('');
-    document.getElementById('rLoanSelect').innerHTML = loans.filter(l => l.status === 'APPROVED').map(l => `<option value="${l.id}">${l.clientName} (TZS ${l.balance.toLocaleString()})</option>`).join('');
+    if(document.getElementById('lClientSelect')) {
+        document.getElementById('lClientSelect').innerHTML = clients.map(c => `<option value="${c.id}">${c.name} (${c.id})</option>`).join('');
+    }
+    if(document.getElementById('rLoanSelect')) {
+        document.getElementById('rLoanSelect').innerHTML = loans.filter(l => l.status === 'APPROVED').map(l => `<option value="${l.id}">${l.clientName} (TZS ${l.balance.toLocaleString()})</option>`).join('');
+    }
 
-    document.getElementById('loanTableBody').innerHTML = loans.map(l => `
-        <tr class="hover:bg-slate-50">
-            <td class="p-2 font-bold">${l.clientName}</td>
-            <td class="p-2">TZS ${l.amount.toLocaleString()}</td>
-            <td class="p-2 font-bold ${l.status === 'APPROVED' ? 'text-emerald-600' : 'text-amber-600'}">${l.status}</td>
-        </tr>
-    `).join('');
+    if(document.getElementById('loanTableBody')) {
+        document.getElementById('loanTableBody').innerHTML = loans.map(l => `
+            <tr class="hover:bg-slate-50">
+                <td class="p-2 font-bold">${l.clientName}</td>
+                <td class="p-2">TZS ${l.amount.toLocaleString()}</td>
+                <td class="p-2 font-bold ${l.status === 'APPROVED' ? 'text-emerald-600' : 'text-amber-600'}">${l.status}</td>
+            </tr>
+        `).join('');
+    }
 
-    document.getElementById('repayTableBody').innerHTML = repayments.map(r => `
-        <tr class="hover:bg-slate-50">
-            <td class="p-2 text-slate-500">${r.date}</td>
-            <td class="p-2 font-bold">${r.clientName}</td>
-            <td class="p-2 text-emerald-600 font-bold">TZS ${r.amount.toLocaleString()}</td>
-        </tr>
-    `).join('');
+    if(document.getElementById('repayTableBody')) {
+        document.getElementById('repayTableBody').innerHTML = repayments.map(r => `
+            <tr class="hover:bg-slate-50">
+                <td class="p-2 text-slate-500">${r.date}</td>
+                <td class="p-2 font-bold">${r.clientName}</td>
+                <td class="p-2 text-emerald-600 font-bold">TZS ${r.amount.toLocaleString()}</td>
+            </tr>
+        `).join('');
+    }
 
     renderChart();
 }
@@ -416,56 +470,57 @@ function viewClientDocs(identifier) {
 
 function renderAdminView() {
     const approved = loans.filter(l => l.status === 'APPROVED' || l.status === 'COMPLETED');
-    const totalDisbursed = approved.reduce((s, l) => s + l.amount, 0);
     const totalCollected = repayments.reduce((s, r) => s + r.amount, 0);
     const totalOutstanding = approved.reduce((s, l) => s + l.balance, 0);
     const totalProfit = approved.reduce((s, l) => s + (l.totalPayable - l.amount), 0);
 
-    document.getElementById('admOut').innerText = 'TZS ' + totalOutstanding.toLocaleString();
-    document.getElementById('admProf').innerText = 'TZS ' + totalProfit.toLocaleString();
-    document.getElementById('admCol').innerText = 'TZS ' + totalCollected.toLocaleString();
+    if(document.getElementById('admOut')) document.getElementById('admOut').innerText = 'TZS ' + totalOutstanding.toLocaleString();
+    if(document.getElementById('admProf')) document.getElementById('admProf').innerText = 'TZS ' + totalProfit.toLocaleString();
+    if(document.getElementById('admCol')) document.getElementById('admCol').innerText = 'TZS ' + totalCollected.toLocaleString();
 
-    document.getElementById('adminAuditLogs').innerHTML = systemLogs.map(log => `
-        <div class="p-2 bg-slate-900 border border-slate-700/60 rounded-xl text-[11px] flex justify-between items-center">
-            <div>
-                <span class="text-amber-400 font-bold">[${log.user}]</span>
-                <span class="text-slate-200 ml-1">${log.action}</span>
+    if(document.getElementById('adminAuditLogs')) {
+        document.getElementById('adminAuditLogs').innerHTML = systemLogs.map(log => `
+            <div class="p-2 bg-slate-900 border border-slate-700/60 rounded-xl text-[11px] flex justify-between items-center">
+                <div>
+                    <span class="text-amber-400 font-bold">[${log.user}]</span>
+                    <span class="text-slate-200 ml-1">${log.action}</span>
+                </div>
+                <span class="text-[9px] text-slate-500">${log.timestamp}</span>
             </div>
-            <span class="text-[9px] text-slate-500">${log.timestamp}</span>
-        </div>
-    `).join('');
+        `).join('');
+    }
 
     const pending = loans.filter(l => l.status === 'PENDING');
-    document.getElementById('adminApprovalTable').innerHTML = pending.length === 0 ? 
-        `<tr><td colspan="4" class="p-3 text-center text-slate-500">Hakuna maombi ya mikopo yanayosubiri.</td></tr>` :
-        pending.map(l => `
+    if(document.getElementById('adminApprovalTable')) {
+        document.getElementById('adminApprovalTable').innerHTML = pending.length === 0 ? 
+            `<tr><td colspan="4" class="p-3 text-center text-slate-500">Hakuna maombi ya mikopo yanayosubiri.</td></tr>` :
+            pending.map(l => `
+                <tr>
+                    <td class="p-2 font-bold text-amber-400">${l.id}</td>
+                    <td class="p-2 text-white">${l.clientName}</td>
+                    <td class="p-2 font-bold">TZS ${l.amount.toLocaleString()}</td>
+                    <td class="p-2 flex gap-1">
+                        <button onclick="approveLoan('${l.id}')" class="px-2 py-1 bg-emerald-500 text-slate-950 font-bold rounded">Kukubali</button>
+                        <button onclick="rejectLoan('${l.id}')" class="px-2 py-1 bg-rose-600 text-white font-bold rounded">Kukataa</button>
+                    </td>
+                </tr>
+            `).join('');
+    }
+
+    if(document.getElementById('adminOfficersTable')) {
+        document.getElementById('adminOfficersTable').innerHTML = registeredUsers.map(u => `
             <tr>
-                <td class="p-2 font-bold text-amber-400">${l.id}</td>
-                <td class="p-2 text-white">${l.clientName}</td>
-                <td class="p-2 font-bold">TZS ${l.amount.toLocaleString()}</td>
-                <td class="p-2 flex gap-1">
-                    <button onclick="approveLoan('${l.id}')" class="px-2 py-1 bg-emerald-500 text-slate-950 font-bold rounded">Kukubali</button>
-                    <button onclick="rejectLoan('${l.id}')" class="px-2 py-1 bg-rose-600 text-white font-bold rounded">Kukataa</button>
+                <td class="p-2 text-white font-semibold">${u.fullname || u.username}</td>
+                <td class="p-2 text-slate-400">${u.username}</td>
+                <td class="p-2"><span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 font-bold">${u.role}</span></td>
+                <td class="p-2">
+                    <button onclick="removeOfficer('${u.username}')" class="px-2 py-1 bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white transition rounded font-bold">Ondoa</button>
                 </td>
             </tr>
         `).join('');
-
-    document.getElementById('adminOfficersTable').innerHTML = registeredUsers.map(u => `
-        <tr>
-            <td class="p-2 text-white font-semibold">${u.fullname || u.username}</td>
-            <td class="p-2 text-slate-400">${u.username}</td>
-            <td class="p-2"><span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 font-bold">${u.role}</span></td>
-            <td class="p-2">
-                <button onclick="removeOfficer('${u.username}')" class="px-2 py-1 bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white transition rounded font-bold">Ondoa</button>
-            </td>
-        </tr>
-    `).join('');
+    }
 
     renderAdminLoansTable();
-}
-
-function viewDocs(clientId) {
-    viewClientDocs(clientId);
 }
 
 function closeDocModal() {
