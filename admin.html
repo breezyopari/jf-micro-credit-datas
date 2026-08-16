@@ -61,7 +61,7 @@
             <div id="admin-tab-overview" class="admin-tab-content space-y-4">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700">
-                        <span class="text-[10px] font-bold text-slate-400">JUMAL YA MTAJI</span>
+                        <span class="text-[10px] font-bold text-slate-400">JUMLA YA MTAJI</span>
                         <h3 class="text-base font-black text-white mt-1" id="admCap">TZS 10,000,000</h3>
                     </div>
                     <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700">
@@ -114,9 +114,36 @@
                 </div>
             </div>
 
-            <!-- TAB 4: USER FORMS AUDIT -->
+            <!-- TAB 4: ORODHA YA MIKOPO NA FOMU ZA MIKAPO -->
             <div id="admin-tab-forms" class="admin-tab-content hidden space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="adminUserFormsGrid"></div>
+                <div class="bg-slate-800/60 rounded-2xl border border-slate-700 p-4 space-y-4">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <h4 class="text-xs font-bold text-slate-200 uppercase">Orodha ya Mikopo na Fomu</h4>
+                        <!-- SEARCH BAR -->
+                        <div class="relative w-full md:w-64">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" id="adminSearchInput" onkeyup="filterAdminLoans()" placeholder="Tafta Mteja..." class="w-full pl-9 pr-4 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500">
+                        </div>
+                    </div>
+
+                    <!-- TABLE ORODHA YA MIKOPO -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="border-b border-slate-700 text-slate-400">
+                                <tr>
+                                    <th class="p-2">ID</th>
+                                    <th class="p-2">Mteja</th>
+                                    <th class="p-2">Simu</th>
+                                    <th class="p-2">Kiasi</th>
+                                    <th class="p-2">Afisa</th>
+                                    <th class="p-2">Hali</th>
+                                    <th class="p-2 text-right">Hatua</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminLoansTable" class="divide-y divide-slate-700/50"></tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </main>
 
@@ -133,7 +160,7 @@
                     <i class="fa-solid fa-users-gear text-lg"></i><span>Maafisa</span>
                 </button>
                 <button onclick="switchAdminTab('forms')" id="admin-nav-forms" class="flex flex-col items-center text-[10px] font-semibold">
-                    <i class="fa-solid fa-folder-open text-lg"></i><span>Fomu</span>
+                    <i class="fa-solid fa-folder-open text-lg"></i><span>Orodha</span>
                 </button>
             </div>
         </nav>
@@ -160,6 +187,16 @@
                 renderAdminView();
             }
         });
+
+        // Function ya kuchuja mteja kwenye search bar ya admin
+        function filterAdminLoans() {
+            const query = document.getElementById('adminSearchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#adminLoansTable tr');
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
     </script>
 </body>
 </html>
