@@ -2,222 +2,220 @@
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JF MICRO-CREDIT | Control Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JF MICRO-CREDIT | Loan Management System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         .bottom-nav-active { color: #f59e0b; font-weight: 700; }
         .bottom-nav-active i { transform: translateY(-2px); color: #f59e0b; }
+        /* Apple Smooth Scrolling & Mobile Touch Adjustments */
+        html { -webkit-overflow-scrolling: touch; }
+        input, select, button { font-size: 16px !important; } /* Prevents iOS auto-zoom on input focus */
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 antialiased min-h-screen pb-20 md:pb-0">
+<body class="bg-slate-900 text-slate-100 antialiased min-h-screen pb-20 md:pb-0 select-none">
 
-    <!-- LOGIN SCREEN FOR ADMIN & USER -->
-    <div id="adminAuthLayout" class="min-h-screen flex items-center justify-center p-4 bg-slate-950">
-        <div class="bg-slate-900 rounded-3xl border border-slate-800 p-6 md:p-8 max-w-md w-full shadow-2xl">
-            <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-amber-500/10 text-amber-500 rounded-2xl mx-auto flex items-center justify-center text-2xl border border-amber-500/20 mb-3">
-                    <i class="fa-solid fa-shield-halved"></i>
+    <!-- OFFICER / USER AUTH SCREEN -->
+    <div id="userAuthLayout" class="min-h-screen flex items-center justify-center p-4 bg-slate-950">
+        <div class="bg-slate-900 rounded-3xl border border-slate-800 p-6 md:p-8 max-w-md w-full shadow-2xl relative">
+            
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-amber-500/10 text-amber-500 rounded-xl flex items-center justify-center text-xl border border-amber-500/20">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-base font-extrabold text-white">JF MICRO-CREDIT</h1>
+                        <p class="text-[10px] text-slate-400">Portal ya Afisa</p>
+                    </div>
                 </div>
-                <h2 class="text-xl font-extrabold text-white">Admin Control Panel</h2>
-                <p class="text-xs text-slate-400 mt-1">Ingiza Credentials za Msimamizi</p>
+                <a href="admin.html" class="text-xs font-bold text-amber-500 hover:underline border border-amber-500/30 px-2.5 py-1 rounded-lg bg-amber-500/10">
+                    Admin Portal <i class="fa-solid fa-arrow-right ml-1"></i>
+                </a>
             </div>
-            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+
+            <!-- LOGIN FORM -->
+            <form id="officerLoginForm" onsubmit="handleOfficerLogin(event)" class="space-y-4">
+                <h3 class="text-sm font-extrabold text-slate-200 uppercase tracking-wider mb-2">Ingia Kwenye Akaunti</h3>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">USERNAME</label>
-                    <input type="text" id="adminUser" required class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-500 text-sm">
+                    <label class="block text-xs font-bold text-slate-400 mb-1">USERNAME / JINA LA SIKU</label>
+                    <input type="text" id="officerUser" required class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 mb-1">PASSWORD</label>
+                    <label class="block text-xs font-bold text-slate-400 mb-1">PASSWORD / NENOSIRI</label>
                     <div class="relative">
-                        <input type="password" id="adminPass" required class="w-full pl-4 pr-10 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-500 text-sm">
-                        <button type="button" onclick="togglePasswordVisibility('adminPass', 'adminPassEye')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
-                            <i id="adminPassEye" class="fa-solid fa-eye"></i>
+                        <input type="password" id="officerPass" required class="w-full pl-4 pr-10 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white outline-none focus:border-amber-500">
+                        <button type="button" onclick="togglePassword('officerPass', 'officerEye')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-2">
+                            <i id="officerEye" class="fa-solid fa-eye"></i>
                         </button>
                     </div>
                 </div>
-                <button type="submit" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl text-sm transition">Ingia Admin Panel</button>
+                <button type="submit" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-black rounded-xl text-sm transition shadow-lg shadow-amber-500/20">
+                    <i class="fa-solid fa-right-to-bracket mr-2"></i> Ingia Mfomoni
+                </button>
             </form>
+
         </div>
     </div>
 
-    <!-- MAIN ADMIN SYSTEM -->
-    <div id="adminMainLayout" class="hidden min-h-screen flex flex-col">
+    <!-- MAIN OFFICER SYSTEM LAYOUT -->
+    <div id="userMainLayout" class="hidden min-h-screen flex flex-col">
         <!-- TOP HEADER -->
         <header class="bg-slate-950 border-b border-slate-800 p-4 sticky top-0 z-30 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 bg-amber-500 text-slate-950 rounded-xl flex items-center justify-center font-extrabold">
-                    <i class="fa-solid fa-user-shield"></i>
+                    <i class="fa-solid fa-user-tie"></i>
                 </div>
                 <div>
-                    <h2 class="font-extrabold text-sm text-white">ADMIN SYSTEM</h2>
-                    <span class="text-[9px] bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold uppercase">Owner / Audit</span>
+                    <h2 class="font-extrabold text-sm text-white" id="displayOfficerName">AFISA WA MIKOPO</h2>
+                    <span class="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold uppercase">Online / Active</span>
                 </div>
             </div>
-            <button onclick="adminLogout()" class="px-3 py-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs font-bold rounded-lg hover:bg-rose-500 hover:text-white transition">Logout</button>
+            <button onclick="officerLogout()" class="px-3 py-1.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs font-bold rounded-lg hover:bg-rose-500 hover:text-white transition">
+                Toka (Logout)
+            </button>
         </header>
 
-        <!-- MAIN DASHBOARD CONTENT -->
-        <main class="flex-1 max-w-5xl w-full mx-auto p-4 space-y-5">
-            <!-- TAB 1: OVERVIEW & AUDIT TRAIL -->
-            <div id="admin-tab-overview" class="admin-tab-content space-y-4">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700">
-                        <span class="text-[10px] font-bold text-slate-400">JUMLA YA MTAJI</span>
-                        <h3 class="text-base font-black text-white mt-1" id="admCap">TZS 10,000,000</h3>
-                    </div>
-                    <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700">
-                        <span class="text-[10px] font-bold text-slate-400">ZILIZOPO NJE</span>
-                        <h3 class="text-base font-black text-amber-400 mt-1" id="admOut">TZS 0</h3>
-                    </div>
-                    <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700">
-                        <span class="text-[10px] font-bold text-slate-400">JUMLA YA FAIDA</span>
-                        <h3 class="text-base font-black text-emerald-400 mt-1" id="admProf">TZS 0</h3>
-                    </div>
-                    <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700">
-                        <span class="text-[10px] font-bold text-slate-400">MAREJESHO</span>
-                        <h3 class="text-base font-black text-blue-400 mt-1" id="admCol">TZS 0</h3>
-                    </div>
-                </div>
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 max-w-3xl w-full mx-auto p-4 space-y-5">
 
-                <div class="bg-slate-800/40 p-4 rounded-2xl border border-slate-700/80">
-                    <h4 class="text-xs font-bold text-slate-300 mb-3"><i class="fa-solid fa-list-check text-amber-500 mr-2"></i> SYSTEM LOGS & AUDIT TRAIL</h4>
-                    <div class="space-y-2 overflow-y-auto max-h-60" id="adminAuditLogs"></div>
-                </div>
-            </div>
-
-            <!-- TAB 2: APPROVAL SYSTEM -->
-            <div id="admin-tab-approvals" class="admin-tab-content hidden space-y-4">
-                <div class="bg-slate-800/60 rounded-2xl border border-slate-700 p-4">
-                    <h4 class="text-xs font-bold text-amber-400 mb-3 uppercase">Kuidhinisha Mikopo (Approval)</h4>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="border-b border-slate-700 text-slate-400">
-                                <tr><th class="p-2">ID</th><th class="p-2">Mteja</th><th class="p-2">Kiasi</th><th class="p-2">Hatua</th></tr>
-                            </thead>
-                            <tbody id="adminApprovalTable" class="divide-y divide-slate-700/50"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 3: USIMAMIZI WA MAAFISA -->
-            <div id="admin-tab-officers" class="admin-tab-content hidden space-y-4">
-                <div class="bg-slate-800/60 rounded-2xl border border-slate-700 p-4 space-y-4">
-                    <h4 class="text-xs font-bold text-slate-200 uppercase">Orodha ya Maafisa (Users)</h4>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="border-b border-slate-700 text-slate-400">
-                                <tr><th class="p-2">Jina</th><th class="p-2">Username</th><th class="p-2">Role</th><th class="p-2">Hatua</th></tr>
-                            </thead>
-                            <tbody id="adminOfficersTable" class="divide-y divide-slate-700/50"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 4: ORODHA YA MIKOPO NA FOMU ZA MIKAPO -->
-            <div id="admin-tab-forms" class="admin-tab-content hidden space-y-4">
-                <div class="bg-slate-800/60 rounded-2xl border border-slate-700 p-4 space-y-4">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                        <h4 class="text-xs font-bold text-slate-200 uppercase">Orodha ya Mikopo na Fomu</h4>
-                        <!-- SEARCH BAR -->
-                        <div class="relative w-full md:w-64">
+            <!-- TAB 1: OMBA MKOPO (LOAN APPLICATION) -->
+            <div id="tab-apply" class="officer-tab-content space-y-4">
+                <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/80 space-y-4">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-2">
+                        <h3 class="text-sm font-extrabold text-amber-400 uppercase tracking-wide">
+                            <i class="fa-solid fa-file-signature mr-2"></i> Sajili Mteja & Omba Mkopo
+                        </h3>
+                        <!-- SEARCH BAR YA KUTAFUTA MTEJA KWENYE SEHEMU YA OMBA MKOPO -->
+                        <div class="relative">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                            <input type="text" id="adminSearchInput" onkeyup="filterAdminLoans()" placeholder="Tafuta Mteja / Afisa..." class="w-full pl-9 pr-4 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500">
+                            <input type="text" id="applySearchInput" onkeyup="searchApplyClients()" placeholder="Tafuta mteja aliyeomba..." class="pl-8 pr-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 w-full md:w-56">
                         </div>
                     </div>
 
-                    <!-- TABLE ORODHA YA MIKOPO -->
+                    <form onsubmit="handleLoanApplication(event)" class="space-y-3">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-400 mb-1">JINA KAMILI LA MTEJA</label>
+                                <input type="text" id="clientName" required class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs outline-none focus:border-amber-500" placeholder="mf. John Doe">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-400 mb-1">NAMBA YA SIMU</label>
+                                <input type="tel" id="clientPhone" required class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs outline-none focus:border-amber-500" placeholder="07XXXXXXXX">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-400 mb-1">KIASI CHA MKOPO (TZS)</label>
+                                <input type="number" id="loanAmount" required class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs outline-none focus:border-amber-500" placeholder="50000">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-400 mb-1">MUDA WA MKOPO (SIKU)</label>
+                                <select id="loanDuration" class="w-full px-3 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-xs outline-none focus:border-amber-500">
+                                    <option value="14">Siku 14</option>
+                                    <option value="30">Siku 30 (Mwezi 1)</option>
+                                    <option value="60">Siku 60 (Miezi 2)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-black rounded-xl text-xs transition">
+                            Wasilisha Maombi ya Mkopo
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB 2: MAREJESHO (REPAYMENTS & SEARCH) -->
+            <div id="tab-repayments" class="officer-tab-content hidden space-y-4">
+                <div class="bg-slate-800/60 p-4 rounded-2xl border border-slate-700/80 space-y-4">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center gap-3">
+                        <h3 class="text-sm font-extrabold text-amber-400 uppercase tracking-wide">
+                            <i class="fa-solid fa-hand-holding-dollar mr-2"></i> Marejesho ya Mikopo
+                        </h3>
+
+                        <!-- SEARCH BAR YA KUTAFUTA MTEJA ALIYESAJILIWA NA AFISA -->
+                        <div class="relative w-full md:w-64">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" id="repaymentSearchInput" onkeyup="filterRepaymentClients()" placeholder="Tafuta mteja (Jina/Simu)..." class="w-full pl-9 pr-4 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500">
+                        </div>
+                    </div>
+
+                    <!-- ORODHA YA MATEJA WA MAREJESHO -->
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-xs">
                             <thead class="border-b border-slate-700 text-slate-400">
                                 <tr>
-                                    <th class="p-2">ID</th>
                                     <th class="p-2">Mteja</th>
                                     <th class="p-2">Simu</th>
-                                    <th class="p-2">Kiasi</th>
-                                    <th class="p-2">Afisa</th>
-                                    <th class="p-2">Hali</th>
+                                    <th class="p-2">Kiasi Mkopo</th>
                                     <th class="p-2 text-right">Hatua</th>
                                 </tr>
                             </thead>
-                            <tbody id="adminLoansTable" class="divide-y divide-slate-700/50"></tbody>
+                            <tbody id="repaymentClientsTable" class="divide-y divide-slate-700/50">
+                                <!-- Data zitaingizwa kwa kupitia Firebase JS -->
+                            </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+
         </main>
 
-        <!-- NAVIGATION BAR YA ADMIN (BOTTOM NAV FOR MOBILE) -->
-        <nav class="fixed bottom-0 left-0 right-0 bg-slate-950 border-t border-slate-800 px-3 py-2 z-40">
+        <!-- BOTTOM NAVIGATION BAR FOR MOBILE (ANDROID & iOS) -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-slate-950 border-t border-slate-800 px-4 py-2 z-40">
             <div class="max-w-md mx-auto flex justify-around items-center text-slate-500">
-                <button onclick="switchAdminTab('overview')" id="admin-nav-overview" class="flex flex-col items-center text-[10px] font-semibold bottom-nav-active">
-                    <i class="fa-solid fa-chart-line text-lg"></i><span>Ripoti</span>
+                <button onclick="switchOfficerTab('apply')" id="off-nav-apply" class="flex flex-col items-center text-[10px] font-semibold bottom-nav-active py-1">
+                    <i class="fa-solid fa-file-pen text-lg mb-0.5"></i><span>Omba Mkopo</span>
                 </button>
-                <button onclick="switchAdminTab('approvals')" id="admin-nav-approvals" class="flex flex-col items-center text-[10px] font-semibold">
-                    <i class="fa-solid fa-clock-rotate-left text-lg"></i><span>Approval</span>
-                </button>
-                <button onclick="switchAdminTab('officers')" id="admin-nav-officers" class="flex flex-col items-center text-[10px] font-semibold">
-                    <i class="fa-solid fa-users-gear text-lg"></i><span>Maafisa</span>
-                </button>
-                <button onclick="switchAdminTab('forms')" id="admin-nav-forms" class="flex flex-col items-center text-[10px] font-semibold">
-                    <i class="fa-solid fa-folder-open text-lg"></i><span>Orodha</span>
+                <button onclick="switchOfficerTab('repayments')" id="off-nav-repayments" class="flex flex-col items-center text-[10px] font-semibold py-1">
+                    <i class="fa-solid fa-money-bill-transfer text-lg mb-0.5"></i><span>Marejesho</span>
                 </button>
             </div>
         </nav>
     </div>
 
-    <!-- DOCUMENT VIEW MODAL -->
-    <div id="docModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md hidden p-4">
-        <div class="bg-slate-900 rounded-3xl border border-slate-700 p-5 max-w-2xl w-full max-h-[85vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-3 border-b border-slate-800 pb-2">
-                <h3 class="text-xs font-bold text-white" id="modalClientTitle">Fomu za Mteja</h3>
-                <button onclick="closeDocModal()" class="text-slate-400 font-bold hover:text-white">✕</button>
-            </div>
-            <div id="modalDocGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
-        </div>
-    </div>
-
-    <!-- FIREBASE JS SDK -->
+    <!-- FIREBASE JS SDK (v8) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-    <!-- MAIN APP SCRIPT -->
+    <!-- APP SCRIPT -->
     <script src="app.js"></script>
-    
     <script>
-        // Check local login status on boot for Admin page
+        // Check local login session
         window.addEventListener('DOMContentLoaded', () => {
-            if(sessionStorage.getItem('jf_admin_active') === 'true') {
-                document.getElementById('adminAuthLayout').classList.add('hidden');
-                document.getElementById('adminMainLayout').classList.remove('hidden');
-                renderAdminView();
+            const activeUser = sessionStorage.getItem('jf_officer_user');
+            if (activeUser) {
+                document.getElementById('userAuthLayout').classList.add('hidden');
+                document.getElementById('userMainLayout').classList.remove('hidden');
+                document.getElementById('displayOfficerName').innerText = activeUser.toUpperCase();
+                loadRepaymentData();
             }
         });
 
-        // Toggle Password Visibility
-        function togglePasswordVisibility(inputId, eyeIconId) {
+        // Password Show/Hide Toggle
+        function togglePassword(inputId, eyeId) {
             const input = document.getElementById(inputId);
-            const eyeIcon = document.getElementById(eyeIconId);
-            if (input.type === "password") {
-                input.type = "text";
-                eyeIcon.classList.remove("fa-eye");
-                eyeIcon.classList.add("fa-eye-slash");
+            const eye = document.getElementById(eyeId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                eye.classList.remove('fa-eye');
+                eye.classList.add('fa-eye-slash');
             } else {
-                input.type = "password";
-                eyeIcon.classList.remove("fa-eye-slash");
-                eyeIcon.classList.add("fa-eye");
+                input.type = 'password';
+                eye.classList.remove('fa-eye-slash');
+                eye.classList.add('fa-eye');
             }
         }
 
-        // Function ya kuchuja mteja kwenye search bar ya admin
-        function filterAdminLoans() {
-            const query = document.getElementById('adminSearchInput').value.toLowerCase();
-            const rows = document.querySelectorAll('#adminLoansTable tr');
+        // Search Filter for Repayments
+        function filterRepaymentClients() {
+            const query = document.getElementById('repaymentSearchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#repaymentClientsTable tr');
             rows.forEach(row => {
                 const text = row.innerText.toLowerCase();
                 row.style.display = text.includes(query) ? '' : 'none';
