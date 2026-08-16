@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JF MICRO-CREDIT | Control Panel</title>
+    <title>JF MICRO-CREDIT | Admin Control Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -15,16 +15,22 @@
 </head>
 <body class="bg-slate-900 text-slate-100 antialiased min-h-screen pb-20 md:pb-0">
 
-    <!-- LOGIN SCREEN FOR ADMIN & USER -->
+    <!-- LOGIN SCREEN FOR ADMIN -->
     <div id="adminAuthLayout" class="min-h-screen flex items-center justify-center p-4 bg-slate-950">
-        <div class="bg-slate-900 rounded-3xl border border-slate-800 p-6 md:p-8 max-w-md w-full shadow-2xl">
-            <div class="text-center mb-6">
+        <div class="bg-slate-900 rounded-3xl border border-slate-800 p-6 md:p-8 max-w-md w-full shadow-2xl relative">
+            <!-- Button ya kurudi Home / Index Page -->
+            <a href="index.html" class="absolute left-4 top-4 text-xs font-bold text-slate-400 hover:text-amber-500 flex items-center gap-1 transition">
+                <i class="fa-solid fa-arrow-left"></i> Rudi Home
+            </a>
+
+            <div class="text-center mb-6 mt-4">
                 <div class="w-16 h-16 bg-amber-500/10 text-amber-500 rounded-2xl mx-auto flex items-center justify-center text-2xl border border-amber-500/20 mb-3">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
                 <h2 class="text-xl font-extrabold text-white">Admin Control Panel</h2>
                 <p class="text-xs text-slate-400 mt-1">Ingiza Credentials za Msimamizi</p>
             </div>
+            
             <form onsubmit="handleAdminLogin(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-400 mb-1">USERNAME</label>
@@ -85,7 +91,9 @@
 
                 <div class="bg-slate-800/40 p-4 rounded-2xl border border-slate-700/80">
                     <h4 class="text-xs font-bold text-slate-300 mb-3"><i class="fa-solid fa-list-check text-amber-500 mr-2"></i> SYSTEM LOGS & AUDIT TRAIL</h4>
-                    <div class="space-y-2 overflow-y-auto max-h-60" id="adminAuditLogs"></div>
+                    <div class="space-y-2 overflow-y-auto max-h-60" id="adminAuditLogs">
+                        <p class="text-xs text-slate-500 italic">Hakuna kumbukumbu kwa sasa...</p>
+                    </div>
                 </div>
             </div>
 
