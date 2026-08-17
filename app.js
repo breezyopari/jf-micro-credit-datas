@@ -1,33 +1,97 @@
-/* UTENDAJI NA MAWASILIANO YA MFUMO WOTE (SHARED LOGIC) */
+/* UTENDAJI NA MAWASILIANO YA MFUMO WOTE (FIREBASE FIRESTORE ENGINE) */
 
-let registeredUsers = JSON.parse(localStorage.getItem('jf_registered_users')) || [];
-let clients = JSON.parse(localStorage.getItem('jf_clients')) || [];
-let loans = JSON.parse(localStorage.getItem('jf_loans')) || [];
-let repayments = JSON.parse(localStorage.getItem('jf_repayments')) || [];
-let systemLogs = JSON.parse(localStorage.getItem('jf_system_logs')) || [];
+// Explicitly register global functions for HTML inline listeners
+window.showAuth = showAuth;
+window.hideAuth = hideAuth;
+window.handleUserRegister = handleUserRegister;
+window.handleUserLogin = handleUserLogin;
+window.handleAdminLogin = handleAdminLogin;
+window.adminLogout = adminLogout;
+window.logout = logout;
+window.switchTab = switchTab;
+window.switchAdminTab = switchAdminTab;
+window.validateFiles = validateFiles;
+window.saveClient = saveClient;
+window.submitLoan = submitLoan;
+window.submitRepayment = submitRepayment;
+window.approveLoan = approveLoan;
+window.rejectLoan = rejectLoan;
+window.removeOfficer = removeOfficer;
+window.viewClientDocs = viewClientDocs;
+window.viewDocs = viewDocs;
+window.closeDocModal = closeDocModal;
+window.filterAdminLoans = filterAdminLoans;
+
+// Firebase Configuration & Initialization
+const firebaseConfig = {
+    apiKey: "AIzaSyDummyKeyReplaceWithYoursIfAvailable",
+    authDomain: "jf-microcredit.firebaseapp.com",
+    projectId: "jf-microcredit",
+    storageBucket: "jf-microcredit.appspot.com",
+    messagingSenderId: "123456789012",
+    appId: "1:123456789012:web:abcdef1234567890"
+};
+
+// Initialize Firebase App & Firestore Database
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+
+// Global In-Memory State
+let registeredUsers = [];
+let clients = [];
+let loans = [];
+let repayments = [];
+let systemLogs = [];
 
 let currentUser = null;
 let selectedFilesBase64 = [];
 let chartInstance = null;
 const defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
-function saveData() {
-    localStorage.setItem('jf_registered_users', JSON.stringify(registeredUsers));
-    localStorage.setItem('jf_clients', JSON.stringify(clients));
-    localStorage.setItem('jf_loans', JSON.stringify(loans));
-    localStorage.setItem('jf_repayments', JSON.stringify(repayments));
-    localStorage.setItem('jf_system_logs', JSON.stringify(systemLogs));
+// Setup Real-Time Listeners for Firestore Collections
+function initRealtimeSync() {
+    db.collection('users').onSnapshot(snapshot => {
+        registeredUsers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderAdminView();
+    }, err => console.error("Error syncing users:", err));
+
+    db.collection('clients').onSnapshot(snapshot => {
+        clients = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderAll();
+        renderAdminView();
+    }, err => console.error("Error syncing clients:", err));
+
+    db.collection('loans').onSnapshot(snapshot => {
+        loans = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderAll();
+        renderAdminView();
+        if (chartInstance) renderChart();
+    }, err => console.error("Error syncing loans:", err));
+
+    db.collection('repayments').onSnapshot(snapshot => {
+        repayments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderAll();
+        renderAdminView();
+        if (chartInstance) renderChart();
+    }, err => console.error("Error syncing repayments:", err));
+
+    db.collection('logs').orderBy('timestampRaw', 'desc').limit(50).onSnapshot(snapshot => {
+        systemLogs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderAdminView();
+    }, err => console.error("Error syncing logs:", err));
 }
 
+// System Logger Function
 function addLog(action, user) {
-    const log = {
-        id: 'LOG-' + Date.now(),
+    const logData = {
         user: user || (currentUser ? currentUser.username : 'System'),
         action: action,
-        timestamp: new Date().toLocaleString()
+        timestamp: new Date().toLocaleString(),
+        timestampRaw: firebase.firestore.FieldValue.serverTimestamp()
     };
-    systemLogs.unshift(log);
-    saveData();
+    db.collection('logs').add(logData).catch(err => console.error("Log error:", err));
 }
 
 /* AUTHENTICATION CONTROL */
@@ -58,11 +122,14 @@ function handleUserRegister(e) {
         return;
     }
 
-    registeredUsers.push({ fullname, username, password, role: 'user', avatar: defaultAvatar });
-    addLog(`Afisa mpya amejisajili: ${username}`, username);
-    saveData();
-    alert('Akaunti imetengenezwa! Subiri au ingia.');
-    showAuth('login');
+    const newUser = { fullname, username, password, role: 'user', avatar: defaultAvatar };
+    db.collection('users').doc(username).set(newUser)
+        .then(() => {
+            addLog(`Afisa mpya amejisajili: ${username}`, username);
+            alert('Akaunti imetengenezwa! Subiri au ingia.');
+            showAuth('login');
+        })
+        .catch(err => alert('Hitilafu ya usajili: ' + err.message));
 }
 
 function handleUserLogin(e) {
@@ -210,8 +277,9 @@ function saveClient(e) {
         return;
     }
 
+    const clientId = 'C-' + Math.floor(100 + Math.random() * 900);
     const newClient = {
-        id: 'C-' + Math.floor(100 + Math.random() * 900),
+        id: clientId,
         name: document.getElementById('cName').value,
         phone: document.getElementById('cPhone').value,
         nida: document.getElementById('cNida').value,
@@ -220,13 +288,14 @@ function saveClient(e) {
         documents: selectedFilesBase64
     };
 
-    clients.push(newClient);
-    addLog(`Mteja mpya amesajiliwa: ${newClient.name} (${newClient.id})`);
-    saveData();
-    document.getElementById('clientForm').reset();
-    selectedFilesBase64 = [];
-    renderAll();
-    alert('Mteja amesajiliwa kikamilifu!');
+    db.collection('clients').doc(clientId).set(newClient)
+        .then(() => {
+            addLog(`Mteja mpya amesajiliwa: ${newClient.name} (${newClient.id})`);
+            document.getElementById('clientForm').reset();
+            selectedFilesBase64 = [];
+            alert('Mteja amesajiliwa kikamilifu!');
+        })
+        .catch(err => alert('Error saving client: ' + err.message));
 }
 
 function submitLoan(e) {
@@ -236,9 +305,10 @@ function submitLoan(e) {
     const amount = parseFloat(document.getElementById('lAmount').value);
     const interest = parseFloat(document.getElementById('lInterest').value);
     const totalPayable = amount + (amount * (interest / 100));
+    const loanId = 'L-' + Math.floor(1000 + Math.random() * 9000);
 
     const newLoan = {
-        id: 'L-' + Math.floor(1000 + Math.random() * 9000),
+        id: loanId,
         clientId: clientId,
         clientName: client ? client.name : 'Unknown',
         phone: client ? client.phone : '-',
@@ -250,12 +320,13 @@ function submitLoan(e) {
         date: new Date().toISOString().split('T')[0]
     };
 
-    loans.push(newLoan);
-    addLog(`Ombi jipya la mkopo limewasilishwa: ${newLoan.id} - TZS ${amount}`);
-    saveData();
-    document.getElementById('loanForm').reset();
-    renderAll();
-    alert('Ombi la mkopo limewasilishwa! Subiri Approval ya Admin.');
+    db.collection('loans').doc(loanId).set(newLoan)
+        .then(() => {
+            addLog(`Ombi jipya la mkopo limewasilishwa: ${newLoan.id} - TZS ${amount}`);
+            document.getElementById('loanForm').reset();
+            alert('Ombi la mkopo limewasilishwa! Subiri Approval ya Admin.');
+        })
+        .catch(err => alert('Error submitting loan: ' + err.message));
 }
 
 function submitRepayment(e) {
@@ -267,54 +338,62 @@ function submitRepayment(e) {
     const loan = loans.find(l => l.id === loanId);
     if (!loan) return;
 
-    loan.balance -= amount;
-    if (loan.balance <= 0) {
-        loan.balance = 0;
-        loan.status = 'COMPLETED';
+    let newBalance = loan.balance - amount;
+    let newStatus = loan.status;
+    if (newBalance <= 0) {
+        newBalance = 0;
+        newStatus = 'COMPLETED';
     }
 
-    repayments.push({
-        id: 'R-' + (repayments.length + 1),
+    const repaymentId = 'R-' + Date.now();
+    const repaymentData = {
+        id: repaymentId,
+        loanId: loanId,
         clientName: loan.clientName,
         amount: amount,
         ref: ref,
         date: new Date().toISOString().split('T')[0]
-    });
+    };
 
-    addLog(`Rejesho limerekodiwa: TZS ${amount} kwa Mkopo ${loan.id}`);
-    saveData();
-    document.getElementById('repayForm').reset();
-    renderAll();
-    alert('Rejesho limerekodiwa kikamilifu!');
+    db.collection('repayments').doc(repaymentId).set(repaymentData)
+        .then(() => {
+            return db.collection('loans').doc(loanId).update({
+                balance: newBalance,
+                status: newStatus
+            });
+        })
+        .then(() => {
+            addLog(`Rejesho limerekodiwa: TZS ${amount} kwa Mkopo ${loan.id}`);
+            document.getElementById('repayForm').reset();
+            alert('Rejesho limerekodiwa kikamilifu!');
+        })
+        .catch(err => alert('Error recording repayment: ' + err.message));
 }
 
 /* ADMIN ACTIONS */
 function approveLoan(loanId) {
-    const loan = loans.find(l => l.id === loanId);
-    if (loan) {
-        loan.status = 'APPROVED';
-        addLog(`Mkopo ${loan.id} WAMETHIBITISHWA na Admin`, 'admin');
-        saveData();
-        renderAdminView();
-    }
+    db.collection('loans').doc(loanId).update({ status: 'APPROVED' })
+        .then(() => {
+            addLog(`Mkopo ${loanId} WAMETHIBITISHWA na Admin`, 'admin');
+        })
+        .catch(err => alert('Error approving loan: ' + err.message));
 }
 
 function rejectLoan(loanId) {
-    const loan = loans.find(l => l.id === loanId);
-    if (loan) {
-        loan.status = 'REJECTED';
-        addLog(`Mkopo ${loan.id} UMEKATALOWA na Admin`, 'admin');
-        saveData();
-        renderAdminView();
-    }
+    db.collection('loans').doc(loanId).update({ status: 'REJECTED' })
+        .then(() => {
+            addLog(`Mkopo ${loanId} UMEKATALOWA na Admin`, 'admin');
+        })
+        .catch(err => alert('Error rejecting loan: ' + err.message));
 }
 
 function removeOfficer(username) {
     if (confirm(`Unahakika unataka kumuondoa afisa ${username}?`)) {
-        registeredUsers = registeredUsers.filter(u => u.username !== username);
-        addLog(`Afisa ${username} ameondolewa kwenye mfumo`, 'admin');
-        saveData();
-        renderAdminView();
+        db.collection('users').doc(username).delete()
+            .then(() => {
+                addLog(`Afisa ${username} ameondolewa kwenye mfumo`, 'admin');
+            })
+            .catch(err => alert('Error removing officer: ' + err.message));
     }
 }
 
@@ -511,6 +590,15 @@ function closeDocModal() {
     if (docModal) docModal.classList.add('hidden');
 }
 
+function filterAdminLoans() {
+    const query = document.getElementById('adminSearchInput') ? document.getElementById('adminSearchInput').value.toLowerCase() : '';
+    const rows = document.querySelectorAll('#adminLoansTable tr');
+    rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+    });
+}
+
 function renderChart() {
     const canvas = document.getElementById('financeChart');
     if(!canvas) return;
@@ -536,8 +624,9 @@ function renderChart() {
     });
 }
 
-// Auto-run pale Admin pekee anapofungua admin.html
+// Auto Initialize Real-time Listeners and Boot Up
 document.addEventListener("DOMContentLoaded", () => {
+    initRealtimeSync();
     if (document.getElementById('adminLoansTable') || document.getElementById('adminMainLayout')) {
         renderAdminView();
     }
