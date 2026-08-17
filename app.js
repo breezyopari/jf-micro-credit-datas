@@ -327,7 +327,7 @@ function submitLoan(e) {
             document.getElementById('loanForm').reset();
             alert('Ombi la mkopo limewasilishwa! Subiri Approval ya Admin.');
         })
-        .catch(err => alert('Error submitting loan: ' + err.message));
+        .catch(err => console.log(err.message));
 }
 
 function submitRepayment(e) {
