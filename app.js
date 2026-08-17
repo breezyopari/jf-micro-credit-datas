@@ -22,14 +22,15 @@ window.viewDocs = viewDocs;
 window.closeDocModal = closeDocModal;
 window.filterAdminLoans = filterAdminLoans;
 
-// Firebase Configuration & Initialization
+// Firebase Configuration & Initialization (API Keys Zako Halisi)
 const firebaseConfig = {
-    apiKey: "AIzaSyDummyKeyReplaceWithYoursIfAvailable",
-    authDomain: "jf-microcredit.firebaseapp.com",
-    projectId: "jf-microcredit",
-    storageBucket: "jf-microcredit.appspot.com",
-    messagingSenderId: "123456789012",
-    appId: "1:123456789012:web:abcdef1234567890"
+  apiKey: "AIzaSyAJaNc_Ah5KDEAzch4VvqRoY4pqcGIBvaA",
+  authDomain: "jf-micro-credit-datas.firebaseapp.com",
+  projectId: "jf-micro-credit-datas",
+  storageBucket: "jf-micro-credit-datas.firebasestorage.app",
+  messagingSenderId: "755353254789",
+  appId: "1:755353254789:web:250d36fb89df00c532a2ec",
+  measurementId: "G-8H452QVR50"
 };
 
 // Initialize Firebase App & Firestore Database
